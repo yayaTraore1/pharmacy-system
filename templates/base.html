@@ -28,6 +28,19 @@
         .sidebar {
             background: linear-gradient(135deg, var(--pharmacy-dark) 0%, var(--pharmacy-teal) 100%);
             box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+            width: 250px;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar {
+                width: 280px;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .content {
+                margin-left: 250px;
+            }
         }
 
         .sidebar h4 {
@@ -80,8 +93,8 @@
 
 <div class="d-flex flex-grow-1">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar bg-dark text-white p-3 vh-100 position-fixed" style="width:250px;">
+    <!-- SIDEBAR (Desktop) -->
+    <div class="sidebar bg-dark text-white p-3 vh-100 position-fixed d-none d-lg-block">
         
         <h4 class="text-center mb-4">💊 Pharmacie Moustapha</h4>
 
@@ -149,11 +162,87 @@
         </div>
     </div>
 
+    <!-- SIDEBAR (Mobile Offcanvas) -->
+    <div class="offcanvas offcanvas-start sidebar" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title text-white" id="sidebarOffcanvasLabel">💊 Pharmacie Moustapha</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-3">
+            <ul class="nav flex-column gap-2">
+
+                <li class="nav-item">
+                    <a href="/dashboard"
+                       class="nav-link {% if request.url.path.startswith('/dashboard') %}active{% else %}text-white{% endif %}">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/products/page"
+                       class="nav-link {% if request.url.path.startswith('/products') %}active{% else %}text-white{% endif %}">
+                        <i class="bi bi-capsule me-2"></i> Produits
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/sales"
+                       class="nav-link {% if request.url.path.startswith('/sales') %}active{% else %}text-white{% endif %}">
+                        <i class="bi bi-cart-check me-2"></i> Ventes
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/suppliers/page"
+                       class="nav-link {% if request.url.path.startswith('/suppliers') %}active{% else %}text-white{% endif %}">
+                        <i class="bi bi-truck me-2"></i> Fournisseurs
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/stock/ruptures/page"
+                       class="nav-link {% if request.url.path.startswith('/stock/ruptures') %}active{% else %}text-white{% endif %}">
+                        <i class="bi bi-exclamation-triangle me-2"></i> Ruptures
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/stock/expirations/page"
+                       class="nav-link {% if request.url.path.startswith('/stock/expirations') %}active{% else %}text-white{% endif %}">
+                        <i class="bi bi-clock-history me-2"></i> Expirations
+                    </a>
+                </li>
+
+                {% if user and user.role == "admin" %}
+                <li class="nav-item">
+                    <a href="/users"
+                       class="nav-link {% if request.url.path.startswith('/users') %}active{% else %}text-white{% endif %}">
+                        <i class="bi bi-people me-2"></i> Utilisateurs
+                    </a>
+                </li>
+                {% endif %}
+
+            </ul>
+
+            <hr class="bg-secondary">
+
+            <div class="mt-auto">
+                <a href="/auth/logout" class="btn btn-danger w-100">
+                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- MAIN CONTENT -->
-    <div class="content d-flex flex-column flex-grow-1" style="margin-left:250px;">
+    <div class="content d-flex flex-column flex-grow-1">
 
         <!-- TOP NAV -->
-        <nav class="navbar navbar-expand navbar-light bg-white shadow-sm px-4">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand d-lg-none" href="/">💊 Pharmacie Moustapha</a>
             <div class="ms-auto d-flex align-items-center">
 
                 {% if user %}
