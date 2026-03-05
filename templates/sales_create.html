@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% block title %}Nouvelle Vente{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h3 class="mb-3">🧾 Nouvelle Vente</h3>
+
+    <!-- NAVIGATION -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link {% if request.url.path == '/sales' %}active{% endif %}"
+               href="/sales">📋 Liste</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.url.path == '/sales/create' %}active{% endif %}"
+               href="/sales/create">➕ Nouvelle Vente</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.url.path == '/sales/history' %}active{% endif %}"
+               href="/sales/history">📜 Historique</a>
+        </li>
+        
+        {% if user.role == "admin" %}
+        <li class="nav-item">
+            <a class="nav-link {% if request.url.path == '/sales/dashboard' %}active{% endif %}"
+               href="/sales/dashboard">📊 Statistiques</a>
+        </li>
+        {% endif %}
+    </ul>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+            <form id="saleForm">
+
+                <div id="itemsContainer"></div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+                    <button type="button"
+                            class="btn btn-outline-primary"
+                            onclick="addItem()">
+                        ➕ Ajouter Produit
+                    </button>
+
+                    <div class="bg-light p-3 rounded shadow-sm">
+                        <h5 class="mb-0">
+                            💰 Total : 
+                            <span id="totalDisplay" class="text-success fw-bold">0</span> GNF
+                        </h5>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        💾 Enregistrer Vente
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+let index = 0;
+
+/* ================= AJOUT PRODUIT ================= */
+
+function addItem() {
+
+    const container = document.getElementById("itemsContainer");
+
+    container.insertAdjacentHTML("beforeend", `
+        <div class="row mb-3 align-items-end item-row border rounded p-3 shadow-sm" id="row_${index}">
+
+            <div class="col-md-6">
+                <label class="form-label">Produit</label>
+                <select class="form-select product-select"
+                        name="product_${index}" 
+                        required 
+                        onchange="checkDuplicate(this); updateTotal();">
+                    <option value="">----------- Choisir Produit ------------</option>
+                    {% for product in products %}
+                        <option value="{{ product.id }}"
+                                data-price="{{ product.sale_price }}"
+                                data-stock="{{ product.quantity }}">
+                            {{ product.name }} - {{ product.sale_price }} GNF - Stock({{ product.quantity }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Quantité</label>
+                <input type="number"
+                       class="form-control quantity-input"
+                       name="quantity_${index}"
+                       min="1"
+                       required
+                       oninput="validateStock(this); updateTotal();">
+            </div>
+
+            <div class="col-md-2">
+                <button type="button"
+                        class="btn btn-danger w-100"
+                        onclick="removeItem(${index})">
+                    ❌ Supprimer
+                </button>
+            </div>
+
+        </div>
+    `);
+
+    index++;
+}
+
+/* ================= SUPPRESSION ================= */
+
+function removeItem(i){
+    const row = document.getElementById(`row_${i}`);
+    if(row){
+        row.remove();
+        updateTotal();
+    }
+}
+
+/* ================= TOTAL ================= */
+
+function updateTotal(){
+
+    let total = 0;
+
+    document.querySelectorAll(".item-row").forEach(row => {
+
+        let select = row.querySelector(".product-select");
+        let qtyInput = row.querySelector(".quantity-input");
+
+        if(select.value && qtyInput.value){
+
+            let price = parseFloat(
+                select.options[select.selectedIndex]
+                .getAttribute("data-price")
+            );
+
+            let qty = parseInt(qtyInput.value);
+
+            total += price * qty;
+        }
+    });
+
+    document.getElementById("totalDisplay").innerText = total.toLocaleString();
+}
+
+/* ================= BLOQUER PRODUIT DOUBLE ================= */
+
+function checkDuplicate(currentSelect){
+
+    let selectedValue = currentSelect.value;
+
+    if(!selectedValue) return;
+
+    let duplicates = 0;
+
+    document.querySelectorAll(".product-select").forEach(select => {
+        if(select.value === selectedValue){
+            duplicates++;
+        }
+    });
+
+    if(duplicates > 1){
+        alert("⚠ Ce produit est déjà sélectionné !");
+        currentSelect.value = "";
+    }
+}
+
+/* ================= VERIFICATION STOCK ================= */
+
+function validateStock(input){
+
+    const row = input.closest(".item-row");
+    const select = row.querySelector(".product-select");
+
+    if(!select.value) return;
+
+    const stock = parseInt(
+        select.options[select.selectedIndex]
+        .getAttribute("data-stock")
+    );
+
+    const qty = parseInt(input.value);
+
+    if(qty > stock){
+        alert("⚠ Quantité supérieure au stock disponible !");
+        input.value = stock;
+    }
+}
+
+/* ================= ENVOI FORMULAIRE ================= */
+
+document.getElementById("saleForm").addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    let items = [];
+
+    document.querySelectorAll(".item-row").forEach(row => {
+
+        let product = row.querySelector(".product-select").value;
+        let quantity = row.querySelector(".quantity-input").value;
+
+        if(product && quantity){
+            items.push({
+                product_id: parseInt(product),
+                quantity: parseInt(quantity)
+            });
+        }
+    });
+
+    if(items.length === 0){
+        alert("Ajoutez au moins un produit !");
+        return;
+    }
+
+    const response = await fetch("/sales/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({items})
+    });
+
+    const data = await response.json();
+
+    if(response.ok){
+        alert("✅ Vente enregistrée !");
+        window.location.href = "/sales";
+    } else {
+        alert("Erreur : " + data.detail);
+    }
+
+});
+
+/* ================= AJOUT AUTOMATIQUE PREMIER CHAMP ================= */
+
+window.onload = function(){
+    addItem();
+};
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}Gestion des Ventes{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-4">🛒 Gestion des Ventes</h3>
+
+<!-- ================= ALERTES ================= -->
+
+{% if request.query_params.get("alert") == "annule" %}
+<div class="alert alert-success alert-dismissible fade show shadow-sm">
+    ✅ Vente annulée avec succès.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+{% if request.query_params.get("alert") == "deja_annule" %}
+<div class="alert alert-warning alert-dismissible fade show shadow-sm">
+    ⚠️ Cette vente est déjà annulée.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+{% if request.query_params.get("alert") == "annulation_24h" %}
+<div class="alert alert-danger alert-dismissible fade show shadow-sm">
+    ❌ Impossible d’annuler une vente après 24h.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+{% if request.query_params.get("alert") == "restaure" %}
+<div class="alert alert-success alert-dismissible fade show shadow-sm">
+    ✅ Vente restaurée avec succès.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+{% if request.query_params.get("alert") == "restaure_24h" %}
+<div class="alert alert-danger alert-dismissible fade show shadow-sm">
+    ❌ Impossible de restaurer après 24h.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+{% if request.query_params.get("alert") == "deja_active" %}
+<div class="alert alert-warning alert-dismissible fade show shadow-sm">
+    ⚠️ Cette vente est déjà active (non annulée).
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+{% if request.query_params.get("alert") == "stock_insuffisant" %}
+<div class="alert alert-danger alert-dismissible fade show shadow-sm">
+    ❌ Impossible de restaurer la vente : stock insuffisant pour l'un des produits.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+<!-- ================= NAVIGATION ================= -->
+
+<ul class="nav nav-tabs mb-4">
+
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales' %}active{% endif %}"
+           href="/sales">
+            📋 Liste
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales/create' %}active{% endif %}"
+           href="/sales/create">
+            ➕ Nouvelle Vente
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales/history' %}active{% endif %}"
+           href="/sales/history">
+            📜 Historique
+        </a>
+    </li>
+    
+    {% if user.role == "admin" %}
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales/dashboard' %}active{% endif %}"
+           href="/sales/dashboard">
+            📊 Statistiques
+        </a>
+    </li>
+    {% endif %}
+
+</ul>
+
+<hr>
+
+<h5>Ventes Récentes</h5>
+
+<table class="table table-striped table-hover shadow-sm">
+    <thead class="table-light">
+        <tr>
+            <th>Montant</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sale in sales %}
+        <tr>
+            <td><strong>{{ sale.total_amount }} GNF</strong></td>
+            <td>{{ sale.created_at.strftime("%d/%m/%Y %H:%M") }}</td>
+            <td>
+                {% if sale.is_cancelled %}
+                    <span class="badge bg-danger">Annulée</span>
+                {% else %}
+                    <span class="badge bg-success">Active</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="/sales/{{ sale.id }}" class="btn btn-sm btn-outline-primary">
+                    Détail
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- ================= NETTOYAGE URL ================= -->
+
+<script>
+    if (window.location.search.includes("alert=")) {
+        setTimeout(() => {
+            window.history.replaceState({}, document.title, "/sales");
+        }, 2500);
+    }
+</script>
+
+{% endblock %}

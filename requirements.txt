@@ -1,0 +1,47 @@
+# ===== CORE FASTAPI =====
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+
+# ===== DATABASE =====
+sqlalchemy==2.0.30
+psycopg2-binary==2.9.9
+alembic==1.13.1
+
+# ===== AUTHENTICATION & SECURITY =====
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.1.2
+
+# ===== FORMS & FILE UPLOAD =====
+python-multipart==0.0.9
+
+# ===== TEMPLATES =====
+jinja2==3.1.4
+
+# ===== DATA VALIDATION =====
+pydantic==2.7.1
+email-validator==2.1.1
+
+# ===== PDF GENERATION (FACTURES) =====
+reportlab==4.2.0
+
+# ===== ENV VARIABLES =====
+python-dotenv==1.0.1
+
+# ===== OPTIONAL (RECOMMENDED) =====
+itsdangerous==2.2.0
+
+# | Package          | Utilité              |
+# | ---------------- | -------------------- |
+# | fastapi          | Backend principal    |
+# | uvicorn          | Serveur              |
+# | sqlalchemy       | ORM                  |
+# | psycopg2-binary  | Connexion PostgreSQL |
+# | alembic          | Migrations DB        |
+# | python-jose      | JWT                  |
+# | passlib + bcrypt | Hash mot de passe    |
+# | python-multipart | Upload fichiers      |
+# | jinja2           | HTML templates       |
+# | reportlab        | Générer factures PDF |
+# | python-dotenv    | Variables secrètes   |
+# | email-validator  | Validation email     |

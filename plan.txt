@@ -1,0 +1,45 @@
+pharmacy_app/
+│
+├── app/
+│   ├── main.py
+│   ├── database.py
+│   │
+│   ├── models/
+│   │   ├── user.py
+│   │   ├── product.py
+│   │   ├── supplier.py
+│   │   ├── sale.py
+│   │   ├── sale_item.py
+│   │   
+│   ├── routes/
+│   │   ├── auth.py
+│   │   ├── products.py
+│   │   ├── suppliers.py
+│   │   ├── sales.py
+│   │   ├── stock.py
+│   │
+│   │   
+│   ├── schemas/
+│   │   ├── user.py
+│   │   ├── product.py
+│   │   ├── supplier.py
+│   │   ├── sale.py
+│   │
+│   ├── utils/
+│   │   ├── dependencies.py
+│   │   ├── invoice.py
+│   │   ├── security.py
+│   │
+│   │
+│   ├── venv/
+│   │
+│   │
+│   │
+│   ├── templates/
+│   │
+│   │
+│   ├── database.py
+│   ├── main.py
+│   └── static\css\js
+│
+└── requirements.txt

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .form-card {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-radius: 10px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .form-card .card-header {
+        background: linear-gradient(90deg, #2c7a7b 0%, #1f5556 100%);
+        color: white;
+        font-weight: 700;
+        border-radius: 10px 10px 0 0;
+        padding: 1.5rem;
+    }
+
+    .form-card .card-body {
+        padding: 2rem;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #2c7a7b;
+        box-shadow: 0 0 0 0.2rem rgba(44, 122, 123, 0.25);
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        padding: 0.75rem 1rem;
+    }
+
+    .form-label {
+        color: #2c7a7b;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .action-buttons .btn {
+        border-radius: 6px;
+        padding: 10px 24px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-submit {
+        background: linear-gradient(90deg, #2ecc71, #27ae60);
+        color: white;
+        border: none;
+    }
+
+    .btn-submit:hover {
+        background: linear-gradient(90deg, #27ae60, #1e8449);
+        color: white;
+    }
+</style>
+
+<h2 style="color: #2c7a7b; font-weight: 700; margin-bottom: 2rem;"><i class="bi bi-plus-circle me-2"></i>Ajouter un Produit</h2>
+
+<div class="form-card card">
+    <div class="card-header">
+        <i class="bi bi-capsule me-2"></i>Informations du Produit
+    </div>
+    <div class="card-body">
+        <form method="post" action="/products/">
+
+            <div class="mb-3">
+                <label class="form-label">Nom du Produit</label>
+                <input class="form-control" name="name" placeholder="Ex: Paracétamol 500mg" required>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Quantité en Stock</label>
+                        <input class="form-control" name="quantity" type="number" placeholder="100" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Seuil de Rupture</label>
+                        <input class="form-control" name="rupture_threshold" type="number" placeholder="10" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Prix de Vente (GNF)</label>
+                        <input class="form-control" name="sale_price" type="number" step="0.01" id="sale_price" placeholder="5000" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Prix d'Achat (auto)</label>
+                        <input class="form-control bg-light" name="purchase_price" type="number" step="0.01" id="purchase_price" placeholder="Calculé automatiquement" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Date d'Expiration</label>
+                <input class="form-control" name="expiration_date" type="date" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Fournisseur</label>
+                <select class="form-select" name="supplier_id" required>
+                    <option value="">Sélectionner un fournisseur</option>
+                    {% for supplier in suppliers %}
+                    <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="d-flex gap-2 action-buttons">
+                <button type="submit" class="btn btn-submit">
+                    <i class="bi bi-check-circle me-1"></i>Créer
+                </button>
+                <a href="/products/page" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle me-1"></i>Annuler
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById("sale_price").addEventListener("input", function() {
+    let sale = parseFloat(this.value) || 0;
+    let purchase = sale / 1.4;
+    document.getElementById("purchase_price").value = purchase.toFixed(2);
+});
+</script>
+
+{% endblock %}

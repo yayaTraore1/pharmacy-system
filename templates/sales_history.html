@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Historique{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-3">🕒 Historique des Ventes</h3>
+
+<ul class="nav nav-tabs mb-4">
+
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales' %}active{% endif %}"
+           href="/sales">
+            📋 Liste
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales/create' %}active{% endif %}"
+           href="/sales/create">
+            ➕ Nouvelle Vente
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales/history' %}active{% endif %}"
+           href="/sales/history">
+            📜 Historique
+        </a>
+    </li>
+
+    {% if user.role == "admin" %}
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales/dashboard' %}active{% endif %}"
+           href="/sales/dashboard">
+            📊 Statistiques
+        </a>
+    </li>
+    {% endif %}
+
+</ul>
+
+<!-- ================= RECHERCHE PAR DATE ================= -->
+
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <form method="get" action="/sales/history" class="row g-3 align-items-end">
+
+            <div class="col-md-4">
+                <label class="form-label">Date début</label>
+                <input type="date" name="date_from"
+                       value="{{ request.query_params.get('date_from', '') }}"
+                       class="form-control">
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Date fin</label>
+                <input type="date" name="date_to"
+                       value="{{ request.query_params.get('date_to', '') }}"
+                       class="form-control">
+            </div>
+
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">
+                    🔍 Rechercher
+                </button>
+
+                <a href="/sales/history" class="btn btn-outline-secondary">
+                    Réinitialiser
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- ================= TABLE ================= -->
+
+<table class="table table-bordered table-hover shadow-sm">
+    <thead class="table-light">
+        <tr>
+            <th>Total</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sale in sales %}
+        <tr>
+            <td><strong>{{ sale.total_amount }} GNF</strong></td>
+            <td>{{ sale.created_at.strftime("%d/%m/%Y") }}</td>
+            <td>
+                <a href="/sales/{{ sale.id }}" class="btn btn-sm btn-primary">
+                    Voir
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+
+        {% if not sales %}
+        <tr>
+            <td colspan="3" class="text-center text-muted">
+                Aucune vente trouvée pour cette période.
+            </td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+{% endblock %}

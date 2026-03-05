@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}📄Détail Vente{% endblock %}
+
+{% block content %}  
+
+<h3>Détail Vente #{{ sale.id }}</h3>
+<button onclick="window.location.href='/sales'" class="btn btn-secondary">
+    ← Retour
+</button>
+
+<p><strong>Date:</strong> {{ sale.created_at }}</p>
+<p><strong>Total:</strong> {{ sale.total_amount }} GNF</p>
+
+{% if sale.is_cancelled %}
+    <span class="badge bg-danger">Vente Annulée</span>
+{% endif %}
+
+<hr>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>Prix Unitaire</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in sale.items %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unit_price }}</td>
+            <td>{{ item.total_price }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not sale.is_cancelled and user.role == "admin" %}
+<form method="post" action="/sales/{{ sale.id }}/cancel"
+  onsubmit="return confirm('Confirmer l\'annulation de cette vente ?')">
+    <button class="btn btn-danger">
+        Annuler Vente
+    </button>
+</form>
+{% endif %}
+
+{% if not sale.is_cancelled %}
+<a href="/sales/{{ sale.id }}/invoice" class="btn btn-dark mt-2">
+    Télécharger Facture
+</a>
+{% endif %}
+
+{% if sale.is_cancelled and user.role == "admin" %}
+<form method="post" action="/sales/{{ sale.id }}/restaure"
+  onsubmit="return confirm('Confirmer la restauration de cette vente ?')">
+    <button class="btn btn-danger">
+        Restaurer Vente
+    </button>
+</form>
+{% endif %}
+
+{% endblock %}
