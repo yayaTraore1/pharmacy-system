@@ -2,6 +2,7 @@ services:
   - type: web
     name: pharmacie-moustapha
     env: python
+    pythonVersion: "3.11"
     region: frankfurt
     plan: free
     buildCommand: pip install -r requirements.txt
