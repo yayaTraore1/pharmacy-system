@@ -20,7 +20,9 @@ def signup(
     username: str = Form(...),
     email: str = Form(...),
     password: str = Form(...),
-    role: str = Form("caissier"),
+    # le rôle est récupéré via un champ caché dans le formulaire
+    # si jamais il n’est pas fourni, on choisit "pharmacien" par défaut
+    role: str = Form("pharmacien"),
     db: Session = Depends(get_db)
 ):
     if db.query(User).filter(User.username == username).first():
