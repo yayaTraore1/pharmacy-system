@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Gestion des Utilisateurs{% endblock %}
+
+{% block content %}
+<style>
+    .page-header {
+        color: #2c7a7b;
+        font-weight: 700;
+        font-size: 1.8rem;
+        letter-spacing: -0.5px;
+        margin-bottom: 2rem;
+    }
+
+    .users-card {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .users-table thead {
+        background: linear-gradient(90deg, #f8f9fa 0%, #f4f7fa 100%);
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .users-table thead th {
+        color: #2c7a7b;
+        font-weight: 600;
+        padding: 1rem;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+    .users-table tbody tr {
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .users-table tbody tr:hover {
+        background-color: rgba(44, 122, 123, 0.04);
+    }
+
+    .users-table tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+
+    .form-select-sm {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.9rem;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+    }
+
+    .form-select-sm:focus {
+        border-color: #2c7a7b;
+        box-shadow: 0 0 0 0.2rem rgba(44, 122, 123, 0.25);
+    }
+</style>
+
+<h3 class="page-header"><i class="bi bi-people me-2"></i>Gestion des Utilisateurs</h3>
+
+<div class="card users-card">
+    <div class="card-body table-responsive p-0">
+
+        <table class="table users-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Nom d'Utilisateur</th>
+                    <th class="text-center">Rôle</th>
+                    <th class="text-center">Statut</th>
+                    <th class="text-center">Créé le</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td class="fw-semibold">{{ u.username }}</td>
+
+                    <!-- ROLE -->
+                    <td class="text-center">
+                        {% if u.id != user.id %}
+                        <form method="post" action="/users/change-role/{{ u.id }}" style="display: inline;">
+                            <select name="new_role"
+                                    class="form-select-sm"
+                                    onchange="this.form.submit()">
+
+                                <option value="admin" {% if u.role == "admin" %}selected{% endif %}>Admin</option>
+                                <option value="caissier" {% if u.role == "caissier" %}selected{% endif %}>Caissier</option>
+                                <option value="pharmacien" {% if u.role == "pharmacien" %}selected{% endif %}>Pharmacien</option>
+
+                            </select>
+                        </form>
+                        {% else %}
+                            <span class="badge" style="background: #2c7a7b; color: white;">{{ u.role }}</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- STATUT -->
+                    <td class="text-center">
+                        {% if u.is_active %}
+                            <span class="badge" style="background: #2ecc71; color: white;"><i class="bi bi-check-circle me-1"></i>Actif</span>
+                        {% else %}
+                            <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Désactivé</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="text-center">
+                        <small>{{ u.created_at.strftime("%d/%m/%Y") if u.created_at else "" }}</small>
+                    </td>
+
+                    <!-- ACTIONS -->
+                    <td class="text-center">
+
+                        {% if u.id != user.id %}
+
+                        <form method="post"
+                              action="/users/toggle-status/{{ u.id }}"
+                              style="display:inline;"
+                              onsubmit="return confirm('Voulez-vous changer le statut de cet utilisateur ?')">
+                            <button class="btn btn-sm" style="background: #3498db; color: white; border: none;">
+                               <i class="bi bi-toggle2-on"></i> Basculer
+                            </button>
+                        </form>
+
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted p-4">
+                        <i class="bi bi-inbox me-2"></i>Aucun utilisateur enregistré
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

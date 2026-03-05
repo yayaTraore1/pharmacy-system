@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}Statistiques{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-3">📊 Statistiques des Ventes</h3>
+
+<ul class="nav nav-tabs mb-4">
+
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales' %}active{% endif %}"
+           href="/sales">
+            📋 Liste
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales/create' %}active{% endif %}"
+           href="/sales/create">
+            ➕ Nouvelle Vente
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales/history' %}active{% endif %}"
+           href="/sales/history">
+            📜 Historique
+        </a>
+    </li>
+    
+    {% if user.role == "admin" %}
+    <li class="nav-item">
+        <a class="nav-link {% if request.url.path == '/sales/dashboard' %}active{% endif %}"
+           href="/sales/dashboard">
+            📊 Statistiques
+        </a>
+    </li>
+    {% endif %}
+    
+
+</ul>
+
+<!-- ================= STATISTIQUES PRINCIPALES ================= -->
+
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 text-center p-3">
+            <h6 class="text-muted">💰 Total Aujourd’hui</h6>
+            <h4 class="fw-bold text-primary">{{ total_today }} GNF</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 text-center p-3">
+            <h6 class="text-muted">📈 Bénéfice Aujourd’hui</h6>
+            <h4 class="fw-bold text-success">{{ profit_today }} GNF</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 text-center p-3">
+            <h6 class="text-muted">✅ Total Validé</h6>
+            <h4 class="fw-bold text-dark">{{ total_validated }} GNF</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 text-center p-3">
+            <h6 class="text-muted">❌ Total Annulé</h6>
+            <h4 class="fw-bold text-danger">{{ total_cancelled }} GNF</h4>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= MOIS / ANNEE ================= -->
+
+<div class="row mb-4">
+
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 text-center p-3">
+            <h6 class="text-muted">📅 Total du Mois</h6>
+            <h4 class="fw-bold text-info">{{ total_month }} GNF</h4>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 text-center p-3">
+            <h6 class="text-muted">🗓️ Total de l’Année</h6>
+            <h4 class="fw-bold text-secondary">{{ total_year }} GNF</h4>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= VENTES PAR UTILISATEUR ================= -->
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-light">
+        <h6 class="mb-0">👤 Ventes Totales par Utilisateur</h6>
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Utilisateur</th>
+                    <th>Nombre de ventes</th>
+                    <th>Montant total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user_stat in user_sales %}
+                <tr>
+                    <td>{{ user_stat.username }}</td>
+                    <td>{{ user_stat.count }}</td>
+                    <td><strong>{{ user_stat.total }} GNF</strong></td>
+                </tr>
+                {% endfor %}
+
+                {% if not user_sales %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted">
+                        Aucune donnée disponible.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ================= VENTES DU JOUR PAR UTILISATEUR ================= -->
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-light">
+        <h6 class="mb-0">📆 Ventes du Jour par Utilisateur</h6>
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Utilisateur</th>
+                    <th>Montant du jour</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for daily in daily_user_sales %}
+                <tr>
+                    <td>{{ daily.username }}</td>
+                    <td><strong>{{ daily.total }} GNF</strong></td>
+                </tr>
+                {% endfor %}
+
+                {% if not daily_user_sales %}
+                <tr>
+                    <td colspan="2" class="text-center text-muted">
+                        Aucune vente aujourd’hui.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

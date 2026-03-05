@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Pharmacy ERP{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        :root {
+            --pharmacy-teal: #2c7a7b;
+            --pharmacy-dark: #1f5556;
+            --pharmacy-light: #f4f7fa;
+        }
+
+        body {
+            background: var(--pharmacy-light);
+        }
+
+        .sidebar {
+            background: linear-gradient(135deg, var(--pharmacy-dark) 0%, var(--pharmacy-teal) 100%);
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 1rem;
+        }
+
+        .sidebar .nav-link {
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .sidebar .nav-link.active {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            color: white !important;
+            font-weight: 600;
+            box-shadow: inset 3px 0 0 white;
+        }
+
+        .navbar {
+            background: white;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .content {
+            background: var(--pharmacy-light);
+        }
+
+        footer {
+            background: white;
+            border-top: 2px solid #f0f0f0;
+            color: #666 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-light d-flex flex-column min-vh-100">
+
+<div class="d-flex flex-grow-1">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar bg-dark text-white p-3 vh-100 position-fixed" style="width:250px;">
+        
+        <h4 class="text-center mb-4">💊 Pharmacie Moustapha</h4>
+
+        <ul class="nav flex-column gap-2">
+
+            <li class="nav-item">
+                <a href="/dashboard"
+                   class="nav-link {% if request.url.path.startswith('/dashboard') %}active{% else %}text-white{% endif %}">
+                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="/products/page"
+                   class="nav-link {% if request.url.path.startswith('/products') %}active{% else %}text-white{% endif %}">
+                    <i class="bi bi-capsule me-2"></i> Produits
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="/sales"
+                   class="nav-link {% if request.url.path.startswith('/sales') %}active{% else %}text-white{% endif %}">
+                    <i class="bi bi-cart-check me-2"></i> Ventes
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="/suppliers/page"
+                   class="nav-link {% if request.url.path.startswith('/suppliers') %}active{% else %}text-white{% endif %}">
+                    <i class="bi bi-truck me-2"></i> Fournisseurs
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="/stock/ruptures/page"
+                   class="nav-link {% if request.url.path.startswith('/stock/ruptures') %}active{% else %}text-white{% endif %}">
+                    <i class="bi bi-exclamation-triangle me-2"></i> Ruptures
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="/stock/expirations/page"
+                   class="nav-link {% if request.url.path.startswith('/stock/expirations') %}active{% else %}text-white{% endif %}">
+                    <i class="bi bi-clock-history me-2"></i> Expirations
+                </a>
+            </li>
+
+            {% if user and user.role == "admin" %}
+            <li class="nav-item">
+                <a href="/users"
+                   class="nav-link {% if request.url.path.startswith('/users') %}active{% else %}text-white{% endif %}">
+                    <i class="bi bi-people me-2"></i> Utilisateurs
+                </a>
+            </li>
+            {% endif %}
+
+        </ul>
+
+        <hr class="bg-secondary">
+
+        <div class="mt-auto">
+            <a href="/auth/logout" class="btn btn-danger w-100">
+                <i class="bi bi-box-arrow-right me-2"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content d-flex flex-column flex-grow-1" style="margin-left:250px;">
+
+        <!-- TOP NAV -->
+        <nav class="navbar navbar-expand navbar-light bg-white shadow-sm px-4">
+            <div class="ms-auto d-flex align-items-center">
+
+                {% if user %}
+                <span class="me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    {{ user.username }}
+                </span>
+                {% endif %}
+
+                <span class="badge bg-success">
+                    <i class="bi bi-calendar-check"></i>
+                    {{ current_date if current_date else "" }}
+                </span>
+
+            </div>
+        </nav>
+
+        <!-- PAGE CONTENT -->
+        <div class="p-4 flex-grow-1">
+            {% block content %}{% endblock %}
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="text-center text-muted py-3 border-top small bg-white">
+            © {{ current_year if current_year else "2026" }} Pharmacie Moustapha - Système de Gestion
+        </footer>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

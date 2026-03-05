@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .page-header {
+        color: #2c7a7b;
+        font-weight: 700;
+        font-size: 1.8rem;
+        letter-spacing: -0.5px;
+        margin-bottom: 2rem;
+    }
+
+    .search-form .input-group {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .ruptures-card {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .ruptures-table thead {
+        background: linear-gradient(90deg, #f8f9fa 0%, #f4f7fa 100%);
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .ruptures-table thead th {
+        color: #2c7a7b;
+        font-weight: 600;
+        padding: 1rem;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+    .ruptures-table tbody tr:hover {
+        background-color: rgba(231, 76, 60, 0.04);
+    }
+
+    .ruptures-table tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+
+    .badge-low-stock {
+        background: linear-gradient(90deg, #e74c3c, #c0392b);
+        padding: 6px 12px;
+        border-radius: 6px;
+        color: white;
+    }
+
+    .info-card {
+        background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="page-header mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Produits en Rupture</h3>
+    <a href="/stock/ruptures/export-pdf{% if search %}?search={{ search }}{% endif %}" class="btn btn-danger" target="_blank">
+        <i class="bi bi-file-pdf me-1"></i> PDF
+    </a>
+</div>
+
+<!-- Barre de recherche -->
+<form method="get" action="/stock/ruptures/page" class="mb-4 search-form">
+    <div class="input-group">
+        <input type="text" name="search" class="form-control form-control-lg" placeholder="Rechercher un produit ou fournisseur..." value="{{ search or '' }}">
+        <button class="btn" style="background: #2c7a7b; color: white; border: none;" type="submit">
+            <i class="bi bi-search"></i> Rechercher
+        </button>
+        {% if search %}
+        <a href="/stock/ruptures/page" class="btn btn-outline-secondary">
+            <i class="bi bi-x-circle"></i> Réinit
+        </a>
+        {% endif %}
+    </div>
+</form>
+
+<div class="card ruptures-card">
+    <div class="table-responsive">
+        <table class="table ruptures-table mb-0">
+            <thead>
+                <tr>
+                    <th>Nom du Produit</th>
+                    <th class="text-center">Stock Actuel</th>
+                    <th class="text-center">Prix Vente</th>
+                    <th>Fournisseur</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td class="fw-semibold">{{ p.name }}</td>
+                    <td class="text-center"><span class="badge-low-stock">{{ p.quantity }} unités</span></td>
+                    <td class="text-center">{{ "%.2f"|format(p.sale_price) }}<small class="text-muted">GNF</small></td>
+                    <td>{{ p.supplier.name if p.supplier else 'N/A' }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted p-4">
+                        <i class="bi bi-check-circle me-2"></i>Aucun produit en rupture
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="info-card">
+    <i class="bi bi-info-circle me-2"></i><strong>Total:</strong> {{ products|length }} produit(s) en rupture
+</div>
+
+{% endblock %}

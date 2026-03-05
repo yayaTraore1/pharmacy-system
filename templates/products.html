@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .page-header {
+        color: #2c7a7b;
+        font-weight: 700;
+        font-size: 1.8rem;
+        letter-spacing: -0.5px;
+        margin-bottom: 2rem;
+    }
+
+    .search-form .input-group {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .search-form .form-control:focus,
+    .search-form .btn:focus {
+        border-color: #2c7a7b;
+        box-shadow: none;
+    }
+
+    .action-buttons .btn {
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 8px 16px;
+    }
+
+    .products-card {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .products-card .table {
+        margin-bottom: 0;
+    }
+
+    .products-table thead {
+        background: linear-gradient(90deg, #f8f9fa 0%, #f4f7fa 100%);
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .products-table thead th {
+        color: #2c7a7b;
+        font-weight: 600;
+        padding: 1rem;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+    .products-table tbody tr {
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .products-table tbody tr:hover {
+        background-color: rgba(44, 122, 123, 0.04);
+    }
+
+    .products-table tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+
+    .badge-stock-low {
+        background: linear-gradient(90deg, #e74c3c, #c0392b);
+        padding: 6px 12px;
+        border-radius: 6px;
+    }
+
+    .badge-stock-ok {
+        background: linear-gradient(90deg, #2ecc71, #27ae60);
+        padding: 6px 12px;
+        border-radius: 6px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 6px;
+    }
+
+    .action-buttons .btn-sm {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="page-header mb-0"><i class="bi bi-capsule me-2"></i>Gestion des Produits</h2>
+            <div class="action-buttons">
+                <a href="/products/export-pdf{% if search %}?search={{ search }}{% endif %}" class="btn btn-danger" target="_blank" rel="noopener">
+                    <i class="bi bi-file-pdf me-1"></i> PDF
+                </a>
+                {% if user.role == "admin" %}
+                <a href="/products/create" class="btn" style="background: linear-gradient(90deg, #2ecc71, #27ae60); color: white; border: none;">
+                    <i class="bi bi-plus-circle me-1"></i> Ajouter
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Barre de recherche -->
+        <form method="get" action="/products/page" class="mb-4 search-form">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control form-control-lg" placeholder="Rechercher un produit..." value="{{ search or '' }}">
+                <button class="btn" style="background: #2c7a7b; color: white; border: none;" type="submit">
+                    <i class="bi bi-search"></i> Rechercher
+                </button>
+                {% if search %}
+                <a href="/products/page" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i> Réinit
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- ================= TABLE ================= -->
+
+    <div class="card products-card">
+
+        <div class="table-responsive" style="max-height: 70vh; overflow-y: auto;">
+            <table class="table products-table">
+
+                <!-- HEADER FIXE -->
+                <thead style="position: sticky; top: 0; z-index: 100;">
+                    <tr>
+                        <th>Nom</th>
+                        <th class="text-center">Stock</th>
+                        <th class="text-center">Prix</th>
+                        <th class="text-center">Seuil</th>
+                        <th class="text-center">Exp.</th>
+                        <th>Fournisseur</th>
+                        {% if user.role == "admin" %}
+                        <th class="text-center">Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for p in products %}
+                    <tr>
+                        <td class="fw-semibold">{{ p.name }}</td>
+
+                        <!-- Stock avec alerte visuelle -->
+                        <td class="text-center">
+                            {% if p.quantity <= p.rupture_threshold %}
+                                <span class="badge badge-stock-low text-white">{{ p.quantity }}</span>
+                            {% else %}
+                                <span class="badge badge-stock-ok text-white">{{ p.quantity }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center">{{ p.sale_price }}<small class="text-muted">GNF</small></td>
+                        <td class="text-center"><small class="text-muted">{{ p.rupture_threshold }}</small></td>
+                        <td class="text-center"><small>{{ p.expiration_date }}</small></td>
+                        <td>{{ p.supplier.name }}</td>
+
+                        {% if user.role == "admin" %}
+                        <td class="text-center">
+                            <a href="/products/edit/{{ p.id }}" class="btn btn-sm" style="background: #f39c12; color: white; border: none;">
+                                <i class="bi bi-pencil"></i> Éditer
+                            </a>
+
+                            <a href="/products/delete/{{ p.id }}" class="btn btn-sm btn-danger"
+                               onclick="return confirm('Supprimer ce produit ?')">
+                               <i class="bi bi-trash"></i> Supp.
+                            </a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+
+                    {% if not products %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox me-2"></i>Aucun produit trouvé.
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
