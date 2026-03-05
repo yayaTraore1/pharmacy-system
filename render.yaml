@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: pharmacie-moustapha
+    env: python
+    region: frankfurt
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        scope: run
+        value: ""
+      - key: SECRET_KEY
+        scope: run
+        value: ""
+      - key: ALGORITHM
+        scope: run
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        scope: run
+        value: "60"
+      - key: PYTHONUNBUFFERED
+        scope: run
+        value: "true"
