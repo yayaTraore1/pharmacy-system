@@ -87,6 +87,15 @@
             <img src="/static/images/logo.png" alt="Logo Pharmacie" class="logo">
             <h3>Créer un compte</h3>
             <p class="text-muted small">Entrez vos informations pour démarrer</p>
+            {% if errors %}
+            <div class="alert alert-danger" role="alert">
+                <ul class="mb-0">
+                    {% for error in errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
 
         <form method="post" action="/auth/signup">
