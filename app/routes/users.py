@@ -88,22 +88,57 @@ def toggle_status(
 
 # ---------------------------
 #  Supprimer utilisateur
-# # ---------------------------
-# @router.post("/delete/{user_id}")
-# def delete_user(
-#     user_id: int,
-#     db: Session = Depends(get_db),
-#     current_user: User = Depends(require_admin)
-# ):
-#     user = db.query(User).filter(User.id == user_id).first()
+# ---------------------------
+@router.post("/delete/{user_id}")
+def delete_user(
+    user_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("admin"))
+):
+    from app.models.sale import Sale  # Import here to avoid circular import
 
-#     if not user:
-#         raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+    user = db.query(User).filter(User.id == user_id).first()
 
-#     if user.id == current_user.id:
-#         raise HTTPException(status_code=400, detail="Impossible de se supprimer soi-même")
+    if not user:
+        users = db.query(User).order_by(User.id.desc()).all()
+        return templates.TemplateResponse(
+            "user_list.html",
+            {
+                "request": request,
+                "users": users,
+                "user": current_user,
+                "error": "Utilisateur introuvable"
+            }
+        )
 
-#     db.delete(user)
-#     db.commit()
+    if user.id == current_user.id:
+        users = db.query(User).order_by(User.id.desc()).all()
+        return templates.TemplateResponse(
+            "user_list.html",
+            {
+                "request": request,
+                "users": users,
+                "user": current_user,
+                "error": "Impossible de se supprimer soi-même"
+            }
+        )
 
-#     return RedirectResponse("/users", status_code=303)
+    # Check if user has sales
+    sales_count = db.query(Sale).filter(Sale.user_id == user_id).count()
+    if sales_count > 0:
+        users = db.query(User).order_by(User.id.desc()).all()
+        return templates.TemplateResponse(
+            "user_list.html",
+            {
+                "request": request,
+                "users": users,
+                "user": current_user,
+                "error": f"Impossible de supprimer cet utilisateur car il a {sales_count} vente(s) associée(s). Désactivez-le plutôt."
+            }
+        )
+
+    db.delete(user)
+    db.commit()
+
+    return RedirectResponse("/users", status_code=303)

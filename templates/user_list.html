@@ -61,6 +61,13 @@
 
 <h3 class="page-header"><i class="bi bi-people me-2"></i>Gestion des Utilisateurs</h3>
 
+{% if error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
 <div class="card users-card">
     <div class="card-body table-responsive p-0">
 
@@ -123,6 +130,15 @@
                               onsubmit="return confirm('Voulez-vous changer le statut de cet utilisateur ?')">
                             <button class="btn btn-sm" style="background: #3498db; color: white; border: none;">
                                <i class="bi bi-toggle2-on"></i> Basculer
+                            </button>
+                        </form>
+
+                        <form method="post"
+                              action="/users/delete/{{ u.id }}"
+                              style="display:inline; margin-left: 0.5rem;"
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')">
+                            <button class="btn btn-sm btn-danger">
+                               <i class="bi bi-trash"></i> Supprimer
                             </button>
                         </form>
 
