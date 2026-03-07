@@ -2,21 +2,77 @@
 
 {% block content %}
 
-<h2>Mon Profil</h2>
+<div class="container mt-4">
 
-<form method="post" action="/users/profile/update">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
 
-    <label>Nom d'utilisateur</label>
-    <input type="text" name="username" value="{{ user.username }}" required>
+            <div class="card shadow-sm">
 
-    <label>Email</label>
-    <input type="email" name="email" value="{{ user.email }}" required>
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-circle"></i>
+                        Mon Profil
+                    </h5>
+                </div>
 
-    <label>Nouveau mot de passe</label>
-    <input type="password" name="password" placeholder="Laisser vide pour ne pas changer">
+                <div class="card-body">
 
-    <button type="submit">Mettre à jour</button>
+                    {% if success %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Informations mises à jour avec succès.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
 
-</form>
+                    <form method="post" action="/users/profile/update">
+
+                        <div class="mb-3">
+                            <label class="form-label">Nom d'utilisateur</label>
+                            <input type="text"
+                                   class="form-control"
+                                   name="username"
+                                   value="{{ user.username }}"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email"
+                                   class="form-control"
+                                   name="email"
+                                   value="{{ user.email }}"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nouveau mot de passe</label>
+                            <input type="password"
+                                   class="form-control"
+                                   name="password"
+                                   placeholder="Laisser vide pour ne pas modifier">
+                        </div>
+
+                        <div class="d-grid">
+                            <button class="btn btn-primary">
+                                <i class="bi bi-save"></i>
+                                Mettre à jour
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="card-footer text-muted text-center">
+                    Rôle : <strong>{{ user.role }}</strong>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
 
 {% endblock %}
