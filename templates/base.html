@@ -95,9 +95,6 @@
 
     <!-- SIDEBAR (Desktop) -->
     <div class="sidebar bg-dark text-white p-3 vh-100 position-fixed d-none d-lg-block">
-      <li>
-    <a href="/users/profile">Mon Profil</a>
-      </li>
         
         <h4 class="text-center mb-4">💊 Pharmacie Moustapha</h4>
 
@@ -153,6 +150,12 @@
                 </a>
             </li>
             {% endif %}
+            <li class="nav-item">
+            <a href="/users/profile"
+                class="nav-link {% if request.url.path.startswith('/users') %}active{% else %}text-white{% endif %}">
+                <i class="bi bi-person me-2"></i> Mon Profil
+                </a>
+            </li>
 
         </ul>
 
