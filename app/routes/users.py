@@ -142,3 +142,45 @@ def delete_user(
     db.commit()
 
     return RedirectResponse("/users", status_code=303)
+    # ---------------------------
+# 👤 Mon Profil
+# ---------------------------
+@router.get("/profile")
+def my_profile(
+    request: Request,
+    current_user: User = Depends(get_current_user)
+):
+    return templates.TemplateResponse(
+        "profile.html",
+        {
+            "request": request,
+            "user": current_user
+        }
+    )
+
+
+# ---------------------------
+# ✏️ Modifier profil
+# ---------------------------
+@router.post("/profile/update")
+def update_profile(
+    username: str = Form(...),
+    email: str = Form(...),
+    password: str = Form(None),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    from app.utils.security import hash_password
+
+    user = db.query(User).filter(User.id == current_user.id).first()
+
+    user.username = username
+    user.email = email
+
+    # Modifier mot de passe seulement si rempli
+    if password:
+        user.password_hash = hash_password(password)
+
+    db.commit()
+
+    return RedirectResponse("/users/profile", status_code=303)
