@@ -74,10 +74,27 @@
             width: 80px;
             margin-bottom: 0.5rem;
         }
+        .success-card {
+    background: linear-gradient(90deg,#2ecc71,#27ae60);
+    color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
     </style>
 </head>
 <body>
     <div class="card login-card">
+
+        {% if success %}
+<div class="success-card">
+    <i class="bi bi-check-circle me-2"></i>
+    Informations mises à jour avec succès
+</div>
+{% endif %}
+
         <div class="text-center mb-4">
             <!-- insérez votre logo ici -->
             <img src="/static/images/logo.png" alt="Logo Pharmacie" class="logo">
