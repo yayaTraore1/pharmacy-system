@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Mon Profil</h2>
+
+<form method="post" action="/users/profile/update">
+
+    <label>Nom d'utilisateur</label>
+    <input type="text" name="username" value="{{ user.username }}" required>
+
+    <label>Email</label>
+    <input type="email" name="email" value="{{ user.email }}" required>
+
+    <label>Nouveau mot de passe</label>
+    <input type="password" name="password" placeholder="Laisser vide pour ne pas changer">
+
+    <button type="submit">Mettre à jour</button>
+
+</form>
+
+{% endblock %}
