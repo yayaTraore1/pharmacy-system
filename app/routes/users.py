@@ -150,14 +150,16 @@ def my_profile(
     request: Request,
     current_user: User = Depends(get_current_user)
 ):
+    success = request.query_params.get("success")
+
     return templates.TemplateResponse(
         "profile.html",
         {
             "request": request,
-            "user": current_user
+            "user": current_user,
+            "success": success
         }
     )
-
 
 # ---------------------------
 # ✏️ Modifier profil
@@ -183,4 +185,4 @@ def update_profile(
 
     db.commit()
 
-    return RedirectResponse("/users/profile", status_code=303)
+    return RedirectResponse("/users/profile?success=1", status_code=303)
