@@ -16,7 +16,7 @@ templates = Jinja2Templates(directory="templates")
 # ---------------------------
 # 📋 Liste des utilisateurs
 # ---------------------------
-@router.get("/")
+@router.get("/page")
 def user_list_page(
     request: Request,
     db: Session = Depends(get_db),
@@ -60,7 +60,7 @@ def change_role(
     user.role = new_role
     db.commit()
 
-    return RedirectResponse("/users", status_code=303)
+    return RedirectResponse("/users/page", status_code=303)
 
 
 # ---------------------------
@@ -83,7 +83,7 @@ def toggle_status(
     user.is_active = not user.is_active
     db.commit()
 
-    return RedirectResponse("/users", status_code=303)
+    return RedirectResponse("/users/page", status_code=303)
 
 
 # ---------------------------
@@ -141,15 +141,14 @@ def delete_user(
     db.delete(user)
     db.commit()
 
-    return RedirectResponse("/users", status_code=303)
+    return RedirectResponse("/users/page", status_code=303)
     # ---------------------------
 # 👤 Mon Profil
 # ---------------------------
 @router.get("/profile")
 def my_profile(
     request: Request,
-    current_user: User = Depends(get_current_user)
-):
+    current_user: User = Depends(get_current_user)):
     success = request.query_params.get("success")
 
     return templates.TemplateResponse(

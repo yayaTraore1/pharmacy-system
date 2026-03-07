@@ -87,9 +87,11 @@
             color: #666 !important;
         }
     </style>
+    
 </head>
 
 <body class="bg-light d-flex flex-column min-vh-100">
+    
 
 <div class="d-flex flex-grow-1">
 
@@ -144,16 +146,17 @@
 
             {% if user and user.role == "admin" %}
             <li class="nav-item">
-                <a href="/users"
-                   class="nav-link {% if request.url.path.startswith('/users') %}active{% else %}text-white{% endif %}">
+                <a href="/users/page"
+                   class="nav-link {% if request.url.path.startswith('/users/page') %}active{% else %}text-white{% endif %}">
                     <i class="bi bi-people me-2"></i> Utilisateurs
                 </a>
             </li>
             {% endif %}
+
             <li class="nav-item">
-            <a href="/users/profile"
-                class="nav-link {% if request.url.path.startswith('/users') %}active{% else %}text-white{% endif %}">
-                <i class="bi bi-person me-2"></i> Mon Profil
+                <a href="/users/profile"
+                   class="nav-link {% if request.url.path.startswith('/users/profile') %}active{% else %}text-white{% endif %}">
+                    <i class="bi bi-person me-2"></i> Mon Profil
                 </a>
             </li>
 
