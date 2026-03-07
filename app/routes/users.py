@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.user import User
+from app.utils.security import hash_password
 from app.utils.dependencies import require_role, get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -160,28 +161,76 @@ def my_profile(
         }
     )
 
-# ---------------------------
-# ✏️ Modifier profil
-# ---------------------------
 @router.post("/profile/update")
 def update_profile(
+    request: Request,
     username: str = Form(...),
     email: str = Form(...),
     password: str = Form(None),
+    confirm_password: str = Form(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    from app.utils.security import hash_password
+
 
     user = db.query(User).filter(User.id == current_user.id).first()
+
+    # Vérifier username déjà utilisé
+    existing_username = db.query(User).filter(
+        User.username == username,
+        User.id != current_user.id
+    ).first()
+
+    if existing_username:
+        return templates.TemplateResponse(
+            "profile.html",
+            {
+                "request": request,
+                "user": current_user,
+                "error": "Ce nom d'utilisateur est déjà utilisé"
+            }
+        )
+
+    # Vérifier email déjà utilisé
+    existing_email = db.query(User).filter(
+        User.email == email,
+        User.id != current_user.id
+    ).first()
+
+    if existing_email:
+        return templates.TemplateResponse(
+            "profile.html",
+            {
+                "request": request,
+                "user": current_user,
+                "error": "Cet email est déjà utilisé"
+            }
+        )
 
     user.username = username
     user.email = email
 
-    # Modifier mot de passe seulement si rempli
+    # Vérification mot de passe
     if password:
+        if password != confirm_password:
+            return templates.TemplateResponse(
+                "profile.html",
+                {
+                    "request": request,
+                    "user": current_user,
+                    "error": "Les mots de passe ne correspondent pas"
+                }
+            )
+
         user.password_hash = hash_password(password)
 
     db.commit()
+    db.refresh(user)
 
-    return RedirectResponse("/users/profile?success=1", status_code=303)
+    return templates.TemplateResponse(
+        "login.html",
+        {
+            "request": request,
+            "success": True
+        }
+    )
