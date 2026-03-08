@@ -1,10 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Mon Profil{% endblock %}
-
 {% block content %}
-
 <style>
-
 .page-header {
     color: #2c7a7b;
     font-weight: 700;
@@ -47,16 +43,20 @@
     padding: 1rem;
 }
 
-
 .btn-save {
     background: #2c7a7b;
     color: white;
     border: none;
+    width: 100%;
+    padding: 12px;
+    font-weight: 600;
+    border-radius: 8px;
 }
 
 .btn-save:hover {
     background: #256b6c;
 }
+
 .error-card {
     background: linear-gradient(90deg,#e74c3c,#c0392b);
     color: white;
@@ -64,91 +64,61 @@
     padding: 1rem;
     margin-bottom: 1.5rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}   
-
+}
 </style>
 
+<div class="container mt-5">
+    <div class="profile-card">
+        <div class="profile-header">
+            <h4><i class="bi bi-person-circle"></i> Mon Profil</h4>
+        </div>
+        <div class="card-body">
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="page-header mb-0">
-        <i class="bi bi-person-circle me-2"></i>Mon Profil
-    </h3>
-</div>
+            {% if error %}
+            <div class="error-card">{{ error }}</div>
+            {% endif %}
 
-{% if error %}
-<div class="error-card">
-    <i class="bi bi-x-circle me-2"></i>
-    {{ error }}
-</div>
-{% endif %}
+            {% if success %}
+            <div class="alert alert-success">{{ success }}</div>
+            {% endif %}
 
-
-<div class="card profile-card">
-
-    <div class="profile-header">
-        <i class="bi bi-person-lines-fill me-2"></i>
-        Informations Utilisateur
-    </div>
-
-    <div class="card-body">
-
-        <form method="post" action="/users/profile/update">
-
-            <div class="row">
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Nom d'utilisateur</label>
-                    <input type="text"
-                           name="username"
-                           class="form-control"
-                           value="{{ user.username }}"
-                           required>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email"
-                           name="email"
-                           class="form-control"
-                           value="{{ user.email }}"
-                           required>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Nouveau mot de passe</label>
-                    <input type="password"
-                           name="password"
-                           class="form-control"
-                           placeholder="Laisser vide pour ne pas modifier">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                   <label class="form-label">Confirmer le mot de passe</label>
-                   <input type="password"
-                           name="confirm_password"
-                           class="form-control"
-                           placeholder="Confirmer le mot de passe">
-                   </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Rôle</label>
-                    <div class="profile-info">
-                        <i class="bi bi-shield-lock me-1"></i>
-                        {{ user.role }}
+            <form method="post" action="/users/profile/update">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nom d'utilisateur</label>
+                        <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
                     </div>
                 </div>
 
-            </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3 profile-info">
+                        <label class="form-label">Rôle</label>
+                        <input type="text" class="form-control" value="{{ user.role }}" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nouveau mot de passe</label>
+                        <input type="password" name="password" class="form-control">
+                    </div>
+                </div>
 
-            <div class="mt-3">
-                <button class="btn btn-save px-4">
-                    <i class="bi bi-save me-1"></i>
-                    Mettre à jour
-                </button>
-            </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Confirmer mot de passe</label>
+                        <input type="password" name="confirm_password" class="form-control">
+                    </div>
+                </div>
 
-        </form>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-save">
+                        <i class="bi bi-save"></i> Sauvegarder
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-
 </div>
 {% endblock %}
