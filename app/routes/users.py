@@ -143,24 +143,31 @@ def delete_user(
     db.commit()
 
     return RedirectResponse("/users/page", status_code=303)
-    # ---------------------------
+# ---------------------------
 # 👤 Mon Profil
 # ---------------------------
 @router.get("/profile")
 def my_profile(
     request: Request,
-    current_user: User = Depends(get_current_user)):
+    current_user: User = Depends(get_current_user)
+):
     success = request.query_params.get("success")
+    error = request.query_params.get("error")
 
     return templates.TemplateResponse(
         "profile.html",
         {
             "request": request,
             "user": current_user,
-            "success": success
+            "success": success,
+            "error": error
         }
     )
 
+
+# ---------------------------
+# 🔄 Mise à jour du profil
+# ---------------------------
 @router.post("/profile/update")
 def update_profile(
     request: Request,
@@ -171,8 +178,6 @@ def update_profile(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-
-
     user = db.query(User).filter(User.id == current_user.id).first()
 
     # Vérifier username déjà utilisé
@@ -180,15 +185,10 @@ def update_profile(
         User.username == username,
         User.id != current_user.id
     ).first()
-
     if existing_username:
         return templates.TemplateResponse(
             "profile.html",
-            {
-                "request": request,
-                "user": current_user,
-                "error": "Ce nom d'utilisateur est déjà utilisé"
-            }
+            {"request": request, "user": current_user, "error": "Nom d'utilisateur déjà utilisé"}
         )
 
     # Vérifier email déjà utilisé
@@ -196,33 +196,40 @@ def update_profile(
         User.email == email,
         User.id != current_user.id
     ).first()
-
     if existing_email:
         return templates.TemplateResponse(
             "profile.html",
-            {
-                "request": request,
-                "user": current_user,
-                "error": "Cet email est déjà utilisé"
-            }
+            {"request": request, "user": current_user, "error": "Email déjà utilisé"}
         )
-
-    user.username = username
-    user.email = email
 
     # Vérification mot de passe
     if password:
         if password != confirm_password:
             return templates.TemplateResponse(
                 "profile.html",
-                {
-                    "request": request,
-                    "user": current_user,
-                    "error": "Les mots de passe ne correspondent pas"
-                }
+                {"request": request, "user": current_user, "error": "Les mots de passe ne correspondent pas"}
             )
+        new_password_hash = hash_password(password)
+    else:
+        new_password_hash = user.password  # <-- correction ici
 
-        user.password_hash = hash_password(password)
+    # Vérifier si quelque chose a changé
+    has_changes = (
+        user.username != username
+        or user.email != email
+        or user.password != new_password_hash
+    )
+
+    if not has_changes:
+        return templates.TemplateResponse(
+            "profile.html",
+            {"request": request, "user": current_user, "success": "Aucune modification détectée"}
+        )
+
+    # Appliquer les changements
+    user.username = username
+    user.email = email
+    user.password = new_password_hash  # <-- correction ici
 
     db.commit()
     db.refresh(user)
@@ -230,7 +237,7 @@ def update_profile(
     return templates.TemplateResponse(
         "login.html",
         {
-            "request": request,
-            "success": True
-        }
+        "request": request,
+        "user": current_user,
+        "success": "Profil mis à jour, veuillez vous reconnecter."}
     )
