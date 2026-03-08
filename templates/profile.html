@@ -47,10 +47,6 @@
     background: #2c7a7b;
     color: white;
     border: none;
-    width: 100%;
-    padding: 12px;
-    font-weight: 600;
-    border-radius: 8px;
 }
 
 .btn-save:hover {
@@ -83,40 +79,29 @@
             {% endif %}
 
             <form method="post" action="/users/profile/update">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Nom d'utilisateur</label>
-                        <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label">Nom d'utilisateur</label>
+                    <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
                 </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3 profile-info">
-                        <label class="form-label">Rôle</label>
-                        <input type="text" class="form-control" value="{{ user.role }}" readonly>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Nouveau mot de passe</label>
-                        <input type="password" name="password" class="form-control">
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
                 </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Confirmer mot de passe</label>
-                        <input type="password" name="confirm_password" class="form-control">
-                    </div>
+                <div class="mb-3 profile-info">
+                    <label class="form-label">Rôle</label>
+                    <input type="text" class="form-control" value="{{ user.role }}" readonly>
                 </div>
-
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-save">
-                        <i class="bi bi-save"></i> Sauvegarder
-                    </button>
+                <div class="mb-3">
+                    <label class="form-label">Nouveau mot de passe</label>
+                    <input type="password" name="password" class="form-control">
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">Confirmer mot de passe</label>
+                    <input type="password" name="confirm_password" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-save">
+                    <i class="bi bi-save"></i> Sauvegarder
+                </button>
             </form>
         </div>
     </div>

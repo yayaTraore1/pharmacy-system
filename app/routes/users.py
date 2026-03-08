@@ -239,5 +239,5 @@ def update_profile(
         {
         "request": request,
         "user": current_user,
-        "success": "Profil mis à jour, veuillez vous reconnecter."}
+        "success": "Profil mis à jour, reconnectez-vous svp."}
     )
