@@ -8,6 +8,10 @@ from app.models.user import User
 from app.utils.security import hash_password
 from app.utils.dependencies import require_role, get_current_user
 
+import secrets
+from datetime import datetime, timedelta
+from app.utils.mailer import send_create_account_email
+
 router = APIRouter(prefix="/users", tags=["Users"])
 templates = Jinja2Templates(directory="templates")
 
@@ -260,75 +264,36 @@ def add_user_page(
 
 
 @router.post("/add")
-def add_user(
+async def add_user(
     request: Request,
     username: str = Form(...),
     email: str = Form(...),
-    password: str = Form(...),
-    confirm_password: str = Form(...),
     role: str = Form(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("admin"))
 ):
 
-    allowed_roles = ["admin", "caissier", "pharmacien"]
-
-    # Vérification rôle
-    if role not in allowed_roles:
+    existing_user = db.query(User).filter(User.username == username).first()
+    if existing_user:
         return templates.TemplateResponse(
             "user_add.html",
-            {
-                "request": request,
-                "user": current_user,
-                "error": "Rôle invalide"
-            }
+            {"request": request, "user": current_user, "error": "Nom utilisateur déjà utilisé"}
         )
 
-    # Vérification mot de passe
-    if password != confirm_password:
-        return templates.TemplateResponse(
-            "user_add.html",
-            {
-                "request": request,
-                "user": current_user,
-                "error": "Les mots de passe ne correspondent pas"
-            }
-        )
+    token = secrets.token_urlsafe(32)
 
-    # Vérifier username
-    existing_username = db.query(User).filter(User.username == username).first()
-    if existing_username:
-        return templates.TemplateResponse(
-            "user_add.html",
-            {
-                "request": request,
-                "user": current_user,
-                "error": "Nom d'utilisateur déjà utilisé"
-            }
-        )
-
-    # Vérifier email
-    existing_email = db.query(User).filter(User.email == email).first()
-    if existing_email:
-        return templates.TemplateResponse(
-            "user_add.html",
-            {
-                "request": request,
-                "user": current_user,
-                "error": "Email déjà utilisé"
-            }
-        )
-
-    # Création utilisateur
     new_user = User(
         username=username,
         email=email,
-        password=hash_password(password),
+        password="temp",  # mot de passe temporaire
         role=role,
-        is_active=True
+        reset_token=token,
+        reset_token_expiry=datetime.utcnow() + timedelta(hours=1)
     )
 
     db.add(new_user)
     db.commit()
+
+    await send_create_account_email(email, username, token)
 
     return RedirectResponse("/users/page", status_code=303)
