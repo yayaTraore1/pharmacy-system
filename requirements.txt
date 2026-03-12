@@ -33,7 +33,6 @@ itsdangerous==2.2.0
 
 # ===== EMAIL =====
 fastapi-mail==1.6.2
-aiosmtplib==3.0.1
 
 # | Package          | Utilité              |
 # | ---------------- | -------------------- |
