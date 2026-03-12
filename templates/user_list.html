@@ -60,6 +60,12 @@
 </style>
 
 <h3 class="page-header"><i class="bi bi-people me-2"></i>Gestion des Utilisateurs</h3>
+    <!-- Bouton Ajouter -->
+<div class="mb-3 text-end">
+    <a href="/users/add" class="btn btn-success" style="background: #2c7a7b; border: none;">
+        <i class="bi bi-person-plus-fill me-1"></i> Ajouter un utilisateur
+    </a>
+</div>
 
 {% if error %}
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -158,8 +164,8 @@
                 {% endfor %}
             </tbody>
         </table>
-
     </div>
 </div>
+
 
 {% endblock %}

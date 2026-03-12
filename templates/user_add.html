@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.page-header {
+    color: #2c7a7b;
+    font-weight: 700;
+    font-size: 1.8rem;
+    letter-spacing: -0.5px;
+}
+
+.profile-card {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.profile-header {
+    background: linear-gradient(90deg, #2c7a7b 0%, #38a3a5 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #444;
+}
+
+.form-control {
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.form-control:focus {
+    border-color: #2c7a7b;
+    box-shadow: 0 0 0 0.2rem rgba(44,122,123,0.15);
+}
+
+.profile-info {
+    background: linear-gradient(90deg,#f8f9fa,#f4f7fa);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.btn-save {
+    background: #2c7a7b;
+    color: white;
+    border: none;
+}
+
+.btn-save:hover {
+    background: #256b6c;
+}
+
+.error-card {
+    background: linear-gradient(90deg,#e74c3c,#c0392b);
+    color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+</style>
+
+
+<div class="container mt-5">
+
+    <div class="profile-card">
+
+        <div class="profile-header">
+            <h4><i class="bi bi-person-plus"></i> Ajouter un utilisateur</h4>
+        </div>
+
+        <div class="card-body">
+
+            {% if error %}
+            <div class="error-card">{{ error }}</div>
+            {% endif %}
+
+            {% if success %}
+            <div class="alert alert-success">{{ success }}</div>
+            {% endif %}
+
+            <form method="post" action="/users/add">
+
+                <div class="mb-3">
+                    <label class="form-label">Nom d'utilisateur</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+
+                <div class="mb-3 profile-info">
+                    <label class="form-label">Rôle</label>
+                    <select name="role" class="form-control">
+                        <option value="caissier">Caissier</option>
+                        <option value="pharmacien">Pharmacien</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mot de passe</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Confirmer mot de passe</label>
+                    <input type="password" name="confirm_password" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-save">
+                    <i class="bi bi-person-plus"></i> Créer l'utilisateur
+                </button>
+
+                <a href="/users/page" class="btn btn-outline-secondary ms-2">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
