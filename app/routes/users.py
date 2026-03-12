@@ -241,3 +241,94 @@ def update_profile(
         "user": current_user,
         "success": "Profil mis à jour, reconnectez-vous svp."}
     )
+
+# ---------------------------
+# ➕ Ajouter utilisateur (Admin)
+# ---------------------------
+@router.get("/add")
+def add_user_page(
+    request: Request,
+    current_user: User = Depends(require_role("admin"))
+):
+    return templates.TemplateResponse(
+        "user_add.html",
+        {
+            "request": request,
+            "user": current_user
+        }
+    )
+
+
+@router.post("/add")
+def add_user(
+    request: Request,
+    username: str = Form(...),
+    email: str = Form(...),
+    password: str = Form(...),
+    confirm_password: str = Form(...),
+    role: str = Form(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("admin"))
+):
+
+    allowed_roles = ["admin", "caissier", "pharmacien"]
+
+    # Vérification rôle
+    if role not in allowed_roles:
+        return templates.TemplateResponse(
+            "user_add.html",
+            {
+                "request": request,
+                "user": current_user,
+                "error": "Rôle invalide"
+            }
+        )
+
+    # Vérification mot de passe
+    if password != confirm_password:
+        return templates.TemplateResponse(
+            "user_add.html",
+            {
+                "request": request,
+                "user": current_user,
+                "error": "Les mots de passe ne correspondent pas"
+            }
+        )
+
+    # Vérifier username
+    existing_username = db.query(User).filter(User.username == username).first()
+    if existing_username:
+        return templates.TemplateResponse(
+            "user_add.html",
+            {
+                "request": request,
+                "user": current_user,
+                "error": "Nom d'utilisateur déjà utilisé"
+            }
+        )
+
+    # Vérifier email
+    existing_email = db.query(User).filter(User.email == email).first()
+    if existing_email:
+        return templates.TemplateResponse(
+            "user_add.html",
+            {
+                "request": request,
+                "user": current_user,
+                "error": "Email déjà utilisé"
+            }
+        )
+
+    # Création utilisateur
+    new_user = User(
+        username=username,
+        email=email,
+        password=hash_password(password),
+        role=role,
+        is_active=True
+    )
+
+    db.add(new_user)
+    db.commit()
+
+    return RedirectResponse("/users/page", status_code=303)
