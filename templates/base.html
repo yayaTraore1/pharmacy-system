@@ -225,7 +225,7 @@
                 {% if user and user.role == "admin" %}
                 <li class="nav-item">
                     <a href="/users/page"
-                       class="nav-link {% if request.url.path.startswith('/users') %}active{% else %}text-white{% endif %}">
+                       class="nav-link {% if request.url.path.startswith('/users/page') %}active{% else %}text-white{% endif %}">
                         <i class="bi bi-people me-2"></i> Utilisateurs
                     </a>
                 </li>
