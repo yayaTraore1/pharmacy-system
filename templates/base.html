@@ -153,18 +153,17 @@
             </li>
             {% endif %}
 
-            <li class="nav-item">
-                <a href="/users/profile"
-                   class="nav-link {% if request.url.path.startswith('/users/profile') %}active{% else %}text-white{% endif %}">
-                    <i class="bi bi-person me-2"></i> Mon Profil
-                </a>
-            </li>
+            
 
         </ul>
 
         <hr class="bg-secondary">
 
         <div class="mt-auto">
+                <a href="/users/profile"
+                   class="nav-link {% if request.url.path.startswith('/users/profile') %}active{% else %}text-white{% endif %}">
+                    <i class="bi bi-person me-2"></i> Mon Profil
+                </a>
             <a href="/auth/logout" class="btn btn-danger w-100">
                 <i class="bi bi-box-arrow-right me-2"></i> Logout
             </a>
@@ -231,18 +230,15 @@
                 </li>
                 {% endif %}
 
-                <li class="nav-item">
-                <a href="/users/profile"
-                   class="nav-link {% if request.url.path.startswith('/users/profile') %}active{% else %}text-white{% endif %}">
-                    <i class="bi bi-person me-2"></i> Mon Profil
-                </a>
-            </li>
-
             </ul>
 
             <hr class="bg-secondary">
 
             <div class="mt-auto">
+                <a href="/users/profile"
+                   class="nav-link {% if request.url.path.startswith('/users/profile') %}active{% else %}text-white{% endif %}">
+                    <i class="bi bi-person me-2"></i> Mon Profil
+                </a>
                 <a href="/auth/logout" class="btn btn-danger w-100">
                     <i class="bi bi-box-arrow-right me-2"></i> Logout
                 </a>
