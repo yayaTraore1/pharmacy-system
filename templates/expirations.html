@@ -87,9 +87,10 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="page-header mb-0"><i class="bi bi-clock-history me-2"></i>Gestion des Expirations</h3>
-    <a href="/stock/expirations/export-pdf{% if search %}?search={{ search }}{% endif %}" class="btn btn-danger" target="_blank">
-        <i class="bi bi-file-pdf me-1"></i> PDF
-    </a>
+    <a href="/stock/expirations/export-pdf?search={{ search or '' }}&status={{ status or '' }}"
+class="btn btn-danger" target="_blank">
+<i class="bi bi-file-pdf me-1"></i> PDF
+</a>
 </div>
 
 <!-- Barre de recherche -->
@@ -106,6 +107,21 @@
         {% endif %}
     </div>
 </form>
+<div class="mb-3">
+
+<a href="/stock/expirations/page" class="btn btn-secondary">
+Tous
+</a>
+
+<a href="/stock/expirations/page?status=expired" class="btn btn-danger">
+Expirés
+</a>
+
+<a href="/stock/expirations/page?status=soon" class="btn btn-warning">
+Bientôt expirés
+</a>
+
+</div>
 
 {% if products|length > 0 %}
 <div class="card expirations-card">
@@ -145,10 +161,19 @@
     </div>
 </div>
 
+{%if status == 'expired' %}
+<div class="info-card">
+    <i class="bi bi-info-circle me-2"></i><strong>Total:</strong> {{ products|length }} produit(s) expiré(s)
+</div>
+{% elif status == 'soon' %}
+<div class="info-card">
+    <i class="bi bi-info-circle me-2"></i><strong>Total:</strong> {{ products|length }} produit(s) bientôt expiré(s)
+</div>
+{%else %}
 <div class="info-card">
     <i class="bi bi-info-circle me-2"></i><strong>Total:</strong> {{ products|length }} produit(s) expiré(s) ou bientôt expiré(s)
 </div>
-
+{% endif %}
 {% else %}
 
 <div class="success-card">
