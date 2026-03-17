@@ -1,11 +1,14 @@
-.sidebar {
-    width: 230px;
-    height: 100vh;
-    position: fixed;
-}
+/* Sidebar layout only applies on larger screens; on mobile we rely on Bootstrap offcanvas */
+@media (min-width: 992px) {
+    .sidebar {
+        width: 230px;
+        height: 100vh;
+        position: fixed;
+    }
 
-.content {
-    margin-left: 230px;
+    .content {
+        margin-left: 230px;
+    }
 }
 
 .nav-link {
@@ -24,4 +27,27 @@
 .hover-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Make tables scrollable on smaller screens */
+@media (max-width: 991.98px) {
+    .table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table thead,
+    .table tbody,
+    .table tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    .table th,
+    .table td {
+        white-space: nowrap;
+    }
 }
