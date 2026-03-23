@@ -58,50 +58,67 @@ def expirations_page(
     request: Request,
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
-    search: str = None
+    search: str = None,
+    status: str = None
 ):
 
     today = date.today()
     limit_date = today + timedelta(days=30)
 
-    # Produits expirés
     expired_query = db.query(Product).filter(
         Product.expiration_date <= today
     )
-    
-    # Produits bientôt expirés (30 jours)
+
     expired_soon_query = db.query(Product).filter(
         Product.expiration_date > today,
         Product.expiration_date <= limit_date
     )
-    
-    # Filtre par recherche si fourni
+
+    # recherche par nom
     if search:
         expired_query = expired_query.filter(
             func.lower(Product.name).contains(func.lower(search))
         )
+
         expired_soon_query = expired_soon_query.filter(
             func.lower(Product.name).contains(func.lower(search))
         )
 
-    expired_products = expired_query.order_by(Product.expiration_date.asc()).all()
-    expired_soon_products = expired_soon_query.order_by(Product.expiration_date.asc()).all()
-    
-    # Ajouter un attribut de statut à chaque produit
-    for p in expired_products:
-        p.expiration_status = "Expiré"
-    for p in expired_soon_products:
-        p.expiration_status = "Bientôt expiré"
-    
-    # Combiner et trier
-    all_products = expired_products + expired_soon_products
-    all_products = sorted(all_products, key=lambda x: x.expiration_date)
+    # filtre par statut
+    if status == "expired":
+
+        products = expired_query.order_by(Product.expiration_date.asc()).all()
+
+        for p in products:
+            p.expiration_status = "Expiré"
+
+    elif status == "soon":
+
+        products = expired_soon_query.order_by(Product.expiration_date.asc()).all()
+
+        for p in products:
+            p.expiration_status = "Bientôt expiré"
+
+    else:
+
+        expired_products = expired_query.order_by(Product.expiration_date.asc()).all()
+        expired_soon_products = expired_soon_query.order_by(Product.expiration_date.asc()).all()
+
+        for p in expired_products:
+            p.expiration_status = "Expiré"
+
+        for p in expired_soon_products:
+            p.expiration_status = "Bientôt expiré"
+
+        products = expired_products + expired_soon_products
+        products = sorted(products, key=lambda x: x.expiration_date)
 
     return templates.TemplateResponse("expirations.html", {
         "request": request,
-        "products": all_products,
+        "products": products,
         "user": user,
-        "search": search
+        "search": search,
+        "status": status
     })
 # ==========================
 # Export PDF
@@ -131,44 +148,68 @@ def export_ruptures_pdf(
 def export_expirations_pdf(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
-    search: str = None
+    search: str = None,
+    status: str = None
 ):
+
     today = date.today()
     limit_date = today + timedelta(days=30)
-    
-    # Produits expirés
+
     expired_query = db.query(Product).filter(
         Product.expiration_date <= today
     )
-    
-    # Produits bientôt expirés
+
     expired_soon_query = db.query(Product).filter(
         Product.expiration_date > today,
         Product.expiration_date <= limit_date
     )
-    
+
+    # recherche par nom
     if search:
         expired_query = expired_query.filter(
             func.lower(Product.name).contains(func.lower(search))
         )
+
         expired_soon_query = expired_soon_query.filter(
             func.lower(Product.name).contains(func.lower(search))
         )
 
-    expired_products = expired_query.order_by(Product.expiration_date.asc()).all()
-    expired_soon_products = expired_soon_query.order_by(Product.expiration_date.asc()).all()
-    
-    # Ajouter statut
-    for p in expired_products:
-        p.expiration_status = "Expiré"
-    for p in expired_soon_products:
-        p.expiration_status = "Bientôt expiré"
-    
-    all_products = expired_products + expired_soon_products
-    
-    filepath = generate_expirations_pdf(all_products)
-    return FileResponse(filepath, media_type="application/pdf", filename="expirations.pdf")
+    # filtre statut
+    if status == "expired":
 
+        products = expired_query.order_by(Product.expiration_date.asc()).all()
+
+        for p in products:
+            p.expiration_status = "Expiré"
+
+    elif status == "soon":
+
+        products = expired_soon_query.order_by(Product.expiration_date.asc()).all()
+
+        for p in products:
+            p.expiration_status = "Bientôt expiré"
+
+    else:
+
+        expired_products = expired_query.order_by(Product.expiration_date.asc()).all()
+        expired_soon_products = expired_soon_query.order_by(Product.expiration_date.asc()).all()
+
+        for p in expired_products:
+            p.expiration_status = "Expiré"
+
+        for p in expired_soon_products:
+            p.expiration_status = "Bientôt expiré"
+
+        products = expired_products + expired_soon_products
+        products = sorted(products, key=lambda x: x.expiration_date)
+
+    filepath = generate_expirations_pdf(products)
+
+    return FileResponse(
+        filepath,
+        media_type="application/pdf",
+        filename="rapport_expirations.pdf"
+    )
 
 # ===========================
 # API JSON (OPTIONNEL)

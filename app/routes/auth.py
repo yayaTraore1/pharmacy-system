@@ -21,48 +21,48 @@ from fastapi import Request
 
 templates = Jinja2Templates(directory="templates")
 
-@router.post("/signup")
-def signup(
-    request: Request,
-    username: str = Form(...),
-    email: str = Form(...),
-    password: str = Form(...),
-    role: str = Form("pharmacien"),
-    db: Session = Depends(get_db)
-):
-    errors = []
-    try:
-        # Validate with Pydantic
-        user_data = UserCreate(username=username, email=email, password=password, role=role)
-    except Exception as e:
-        errors.append(str(e))
+# @router.post("/signup")
+# def signup(
+#     request: Request,
+#     username: str = Form(...),
+#     email: str = Form(...),
+#     password: str = Form(...),
+#     role: str = Form("pharmacien"),
+#     db: Session = Depends(get_db)
+# ):
+#     errors = []
+#     try:
+#         # Validate with Pydantic
+#         user_data = UserCreate(username=username, email=email, password=password, role=role)
+#     except Exception as e:
+#         errors.append(str(e))
     
-    if not errors:
-        if db.query(User).filter(User.username == user_data.username).first():
-            errors.append("Username already exists")
+#     if not errors:
+#         if db.query(User).filter(User.username == user_data.username).first():
+#             errors.append("Username already exists")
         
-        if db.query(User).filter(User.email == user_data.email).first():
-            errors.append("Email already exists")
+#         if db.query(User).filter(User.email == user_data.email).first():
+#             errors.append("Email already exists")
     
-    if errors:
-        return templates.TemplateResponse("signup.html", {"request": request, "errors": errors})
+#     if errors:
+#         return templates.TemplateResponse("signup.html", {"request": request, "errors": errors})
     
-    new_user = User(
-        username=user_data.username,
-        email=user_data.email,
-        password=hash_password(user_data.password),
-        role=user_data.role
-    )
+#     new_user = User(
+#         username=user_data.username,
+#         email=user_data.email,
+#         password=hash_password(user_data.password),
+#         role=user_data.role
+#     )
 
-    try:
-        db.add(new_user)
-        db.commit()
-    except Exception as e:
-        db.rollback()
-        errors.append("Database error: " + str(e))
-        return templates.TemplateResponse("signup.html", {"request": request, "errors": errors})
+#     try:
+#         db.add(new_user)
+#         db.commit()
+#     except Exception as e:
+#         db.rollback()
+#         errors.append("Database error: " + str(e))
+#         return templates.TemplateResponse("signup.html", {"request": request, "errors": errors})
 
-    return RedirectResponse(url="/login", status_code=303)
+#     return RedirectResponse(url="/login", status_code=303)
 
 @router.post("/login")
 def login(
