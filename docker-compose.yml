@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 6808
+      POSTGRES_DB: pharmacie_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: uvicorn app.main:app --host 0.0.0.0 --port 10000 --reload
+    volumes:
+      - .:/app
+    ports:
+      - "10000:10000"
+    environment:
+      # Override DATABASE_URL to point at the dockerized Postgres service
+      - DATABASE_URL=postgresql://postgres:6808@db:5432/pharmacie_db
+      - SECRET_KEY=supersecretpharmacie2026
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=60
+      - BASE_URL=http://localhost:10000
+      - SMTP_USER=yayatraore115@gmail.com
+      - SMTP_PASSWORD=fdvj hhre uudb stjz
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

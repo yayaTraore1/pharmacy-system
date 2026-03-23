@@ -140,7 +140,7 @@ Bientôt expirés
                 {% for product in products %}
                 <tr>
                     <td class="fw-semibold">{{ product.name }}</td>
-                    <td class="text-center">{{ "%.2f"|format(product.sale_price) }}<small class="text-muted">GNF</small></td>
+                    <td class="text-center">{{ product.sale_price | format_gnf }}<small class="text-muted">GNF</small></td>
                     <td class="text-center"><span class="badge" style="background: linear-gradient(90deg, #e74c3c, #c0392b); color: white;">{{ product.quantity }}</span></td>
                     <td class="text-center">{{ product.expiration_date.strftime('%d/%m/%Y') if product.expiration_date else 'N/A' }}</td>
                     <td class="text-center">

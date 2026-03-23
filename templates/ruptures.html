@@ -100,7 +100,7 @@
                 <tr>
                     <td class="fw-semibold">{{ p.name }}</td>
                     <td class="text-center"><span class="badge-low-stock">{{ p.quantity }} unités</span></td>
-                    <td class="text-center">{{ "%.2f"|format(p.sale_price) }}<small class="text-muted">GNF</small></td>
+                    <td class="text-center">{{ p.sale_price | format_gnf }}<small class="text-muted">GNF</small></td>
                     <td>{{ p.supplier.name if p.supplier else 'N/A' }}</td>
                 </tr>
                 {% else %}

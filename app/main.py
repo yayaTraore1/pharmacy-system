@@ -21,6 +21,45 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
+
+# Custom Jinja filter pour formatage téléphone : xxx xx xx xx
+def format_phone_number(phone: str):
+    if not phone:
+        return phone
+
+    digits = ''.join(ch for ch in phone if ch.isdigit())
+    # Gestion du cas +224 ou autre préfixe, on conserve les 9 derniers chiffres si +224xxxxxxx
+    if len(digits) > 9:
+        digits = digits[-9:]
+
+    if len(digits) == 9:
+        return f"{digits[0:3]} {digits[3:5]} {digits[5:7]} {digits[7:9]}"
+    
+    # Cas fallback : tranches de 3/2/2/2 pour n'importe quelle longueur >= 7
+    if len(digits) >= 7:
+        return ' '.join([digits[0:3], digits[3:5], digits[5:7], digits[7:9]]).strip()
+
+    return phone
+
+templates.env.filters['format_phone'] = format_phone_number
+
+# Custom Jinja filter pour formatage prix guinéen : 1.000.000
+def format_gnf_price(price):
+    if price is None:
+        return "0"
+    
+    # Convertir en entier pour éviter les décimales
+    try:
+        price_int = int(float(price))
+    except (ValueError, TypeError):
+        return str(price)
+    
+    # Formater avec des points comme séparateurs de milliers
+    return f"{price_int:,}".replace(",", ".")
+
+templates.env.filters['format_gnf'] = format_gnf_price
+
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Routers

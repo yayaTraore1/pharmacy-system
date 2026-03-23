@@ -162,7 +162,7 @@
                             {% endif %}
                         </td>
 
-                        <td class="text-center">{{ p.sale_price }}<small class="text-muted">GNF</small></td>
+                        <td class="text-center">{{ p.sale_price | format_gnf }}<small class="text-muted">GNF</small></td>
                         <td class="text-center"><small class="text-muted">{{ p.rupture_threshold }}</small></td>
                         <td class="text-center"><small>{{ p.expiration_date }}</small></td>
                         <td>{{ p.supplier.name }}</td>

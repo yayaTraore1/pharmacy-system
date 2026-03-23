@@ -91,7 +91,7 @@ function addItem() {
                         <option value="{{ product.id }}"
                                 data-price="{{ product.sale_price }}"
                                 data-stock="{{ product.quantity }}">
-                            {{ product.name }} - {{ product.sale_price }} GNF - Stock({{ product.quantity }})
+                            {{ product.name }} - {{ product.sale_price | format_gnf }} GNF - Stock({{ product.quantity }})
                         </option>
                     {% endfor %}
                 </select>

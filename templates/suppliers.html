@@ -110,7 +110,7 @@
                         {% for s in suppliers %}
                         <tr>
                             <td class="fw-semibold">{{ s.name }}</td>
-                            <td class="text-center"><small>{{ s.phone }}</small></td>
+                            <td class="text-center"><small>{{ s.phone | format_phone }}</small></td>
                             <td>{{ s.email }}</td>
                             <td>{{ s.address }}</td>
 

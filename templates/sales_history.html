@@ -75,6 +75,7 @@
 
 <!-- ================= TABLE ================= -->
 
+<div class="table-responsive">
 <table class="table table-bordered table-hover shadow-sm">
     <thead class="table-light">
         <tr>
@@ -86,7 +87,7 @@
     <tbody>
         {% for sale in sales %}
         <tr>
-            <td><strong>{{ sale.total_amount }} GNF</strong></td>
+            <td><strong>{{ sale.total_amount | format_gnf }} GNF</strong></td>
             <td>{{ sale.created_at.strftime("%d/%m/%Y") }}</td>
             <td>
                 <a href="/sales/{{ sale.id }}" class="btn btn-sm btn-primary">
@@ -105,5 +106,6 @@
         {% endif %}
     </tbody>
 </table>
+</div>
 
 {% endblock %}
