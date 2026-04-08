@@ -90,12 +90,19 @@ def login(
 
     db_user = db.query(User).filter(User.username == form_data.username).first()
 
+    message_error = None
+
     if not db_user or not verify_password(form_data.password, db_user.password):
         # invalid credentials count as an attempt (already recorded above)
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        message_error = "Nom d'utilisateur ou mot de passe incorrect."
 
-    if db_user.is_active is False:
-        raise HTTPException(status_code=403, detail="User account is inactive")
+    elif db_user.is_active is False:
+        message_error = "Compte désactivé. Veuillez contacter le support."
+    if message_error:
+        return templates.TemplateResponse(
+            "login.html",
+            {"request": request, "error": message_error}
+        )    
 
     # reset attempt counter on successful login
     login_attempts.pop(key, None)

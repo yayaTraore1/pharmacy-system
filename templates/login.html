@@ -82,6 +82,14 @@
     margin-bottom: 1.5rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
+        .error-card {
+    background: linear-gradient(90deg,#e74c3c,#c0392b);
+    color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
 
     </style>
 </head>
@@ -94,6 +102,13 @@
     {{ success }}
 </div>
 {% endif %}
+{% if error %}
+<div class="error-card">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ error }}
+</div>
+{% endif %}
+
 
         <div class="text-center mb-4">
             <!-- insérez votre logo ici -->
