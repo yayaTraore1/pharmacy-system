@@ -32,17 +32,26 @@
 /* Make tables scrollable on smaller screens */
 @media (max-width: 991.98px) {
     .table-responsive {
+        width: 100%;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 
     .table {
+        min-width: 650px;
         table-layout: auto;
     }
 
     .table th,
     .table td {
         white-space: nowrap;
-        min-width: 80px; /* Prevent columns from being too narrow */
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .table td,
+    .table th {
+        vertical-align: middle;
     }
 }
+
