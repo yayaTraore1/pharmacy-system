@@ -17,6 +17,7 @@
 
 <hr>
 
+<div class="table-responsive">
 <table class="table">
     <thead>
         <tr>
@@ -37,6 +38,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 
 {% if not sale.is_cancelled and user.role == "admin" %}
 <form method="post" action="/sales/{{ sale.id }}/cancel"

@@ -31,23 +31,27 @@
 
 /* Make tables scrollable on smaller screens */
 @media (max-width: 991.98px) {
-    .table {
-        display: block;
+    .table-responsive {
         width: 100%;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 
-    .table thead,
-    .table tbody,
-    .table tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
+    .table {
+        min-width: 650px;
+        table-layout: auto;
     }
 
     .table th,
     .table td {
         white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .table td,
+    .table th {
+        vertical-align: middle;
     }
 }
+
