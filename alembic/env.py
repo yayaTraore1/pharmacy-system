@@ -20,9 +20,13 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL:
     config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
-# Interpret the config file for Python logging.
+# Interpret the config file for Python logging. If logging config is malformed,
+# continue without failing (some environments may not provide full logging sections).
 if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
+    try:
+        fileConfig(config.config_file_name)
+    except Exception:
+        print("Warning: alembic logging configuration failed to load; continuing without fileConfig")
 
 target_metadata = Base.metadata
 
