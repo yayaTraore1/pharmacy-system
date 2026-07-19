@@ -5,134 +5,230 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - Pharmacie</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --pharmacy-teal: #2c7a7b;
+            --pharmacy-dark: #1f5556;
+        }
+
         body {
-            background: #f4f7fa;
-            height: 100vh;
+            background: linear-gradient(135deg, #eef5f5 0%, #f4f7fa 60%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 1rem;
         }
 
-        .login-card {
-            border-radius: 1rem;
-            max-width: 420px;
+        .login-wrapper {
+            max-width: 860px;
             width: 100%;
-            background-color: #ffffff;
-            padding: 2.5rem;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #ffffff;
+            border-radius: 1.25rem;
+            box-shadow: 0 20px 60px rgba(31, 85, 86, 0.15);
+            overflow: hidden;
+            display: flex;
         }
 
-        @media (max-width: 575.98px) {
-            .login-card {
-                padding: 1.5rem;
-                margin: 1rem;
+        .login-brand {
+            flex: 1 1 45%;
+            background: linear-gradient(150deg, var(--pharmacy-dark) 0%, var(--pharmacy-teal) 100%);
+            color: white;
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-brand::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            top: -80px;
+            right: -80px;
+        }
+
+        .login-brand .logo {
+            width: 64px;
+            margin-bottom: 1.5rem;
+            background: white;
+            border-radius: 14px;
+            padding: 8px;
+        }
+
+        .login-brand h2 {
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .login-brand p {
+            opacity: 0.85;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .login-form-side {
+            flex: 1 1 55%;
+            padding: 3rem 2.75rem;
+        }
+
+        @media (max-width: 767.98px) {
+            .login-wrapper {
+                flex-direction: column;
+                border-radius: 1rem;
+            }
+
+            .login-brand {
+                padding: 2rem;
+                text-align: center;
+                align-items: center;
+            }
+
+            .login-form-side {
+                padding: 2rem;
             }
         }
 
-        .login-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+        .login-form-side h3 {
+            font-weight: 700;
+            color: var(--pharmacy-dark);
+            margin-bottom: 0.25rem;
         }
 
-        .login-card h3 {
-            font-weight: 700;
-            color: #2c7a7b; /* pharmacy teal */
-            margin-bottom: 1rem;
+        .form-label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 0.65rem 0.9rem;
         }
 
         .form-control:focus {
-            border-color: #2c7a7b;
-            box-shadow: 0 0 0 0.2rem rgba(44, 122, 123, 0.25);
+            border-color: var(--pharmacy-teal);
+            box-shadow: 0 0 0 0.2rem rgba(44, 122, 123, 0.2);
+        }
+
+        .input-group-text {
+            background: #f4f7fa;
+            border-right: none;
+            color: var(--pharmacy-teal);
+        }
+
+        .input-group .form-control {
+            border-left: none;
         }
 
         .btn-primary {
-            background-color: #2c7a7b;
-            border-color: #2c7a7b;
+            background-color: var(--pharmacy-teal);
+            border-color: var(--pharmacy-teal);
             font-weight: 600;
+            border-radius: 8px;
+            padding: 0.65rem;
+            transition: background-color 0.2s ease, transform 0.2s ease;
         }
 
         .btn-primary:hover {
-            background-color: #285e61;
-            border-color: #285e61;
+            background-color: var(--pharmacy-dark);
+            border-color: var(--pharmacy-dark);
+            transform: translateY(-1px);
         }
 
         .login-footer a {
-            color: #2c7a7b;
+            color: var(--pharmacy-teal);
             text-decoration: none;
             font-weight: 500;
         }
 
         .login-footer a:hover {
             text-decoration: underline;
-            color: #285e61;
+            color: var(--pharmacy-dark);
         }
 
-        .logo {
-            width: 80px;
-            margin-bottom: 0.5rem;
-        }
         .success-card {
-    background: linear-gradient(90deg,#2ecc71,#27ae60);
-    color: white;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-        .error-card {
-    background: linear-gradient(90deg,#e74c3c,#c0392b);
-    color: white;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            color: white;
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
 
+        .error-card {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            color: white;
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
-    <div class="card login-card">
+    <div class="login-wrapper">
 
-        {% if success %}
-<div class="success-card">
-    <i class="bi bi-check-circle me-2"></i>
-    {{ success }}
-</div>
-{% endif %}
-{% if error %}
-<div class="error-card">
-    <i class="bi bi-exclamation-triangle me-2"></i>
-    {{ error }}
-</div>
-{% endif %}
-
-
-        <div class="text-center mb-4">
-            <!-- insérez votre logo ici -->
+        <!-- PANNEAU DE MARQUE -->
+        <div class="login-brand">
             <img src="/static/images/logo.png" alt="Logo Pharmacie" class="logo">
-            <h3>Accès sécurisé</h3>
-            <p class="text-muted small">Veuillez vous identifier pour continuer</p>
+            <h2>Pharmacie Moustapha</h2>
+            <p>Système de gestion de pharmacie : stock, ventes, fournisseurs et expirations, réunis en un seul endroit.</p>
         </div>
 
-        <form method="post" action="/auth/login">
-            <div class="mb-3">
-                <label class="form-label">Nom d'utilisateur</label>
-                <input type="text" name="username" class="form-control" placeholder="Entrez votre nom d'utilisateur" required>
+        <!-- FORMULAIRE -->
+        <div class="login-form-side">
+
+            {% if success %}
+            <div class="success-card">
+                <i class="bi bi-check-circle me-2"></i>{{ success }}
+            </div>
+            {% endif %}
+            {% if error %}
+            <div class="error-card">
+                <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+            </div>
+            {% endif %}
+
+            <div class="mb-4">
+                <h3>Accès sécurisé</h3>
+                <p class="text-muted small mb-0">Veuillez vous identifier pour continuer</p>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Mot de passe</label>
-                <input type="password" name="password" class="form-control" placeholder="Entrez votre mot de passe" required>
+            <form method="post" action="/auth/login">
+                <div class="mb-3">
+                    <label class="form-label">Nom d'utilisateur</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" name="username" class="form-control" placeholder="Entrez votre nom d'utilisateur" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mot de passe</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" name="password" class="form-control" placeholder="Entrez votre mot de passe" required>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary w-100 mt-3">Se connecter</button>
+            </form>
+
+            <div class="text-center mt-4 login-footer">
+                <small>Mot de passe oublié ? <a href="/auth/forgot-password">Cliquer ici</a></small>
             </div>
-
-            <button class="btn btn-primary w-100 mt-3">Se connecter</button>
-        </form>
-
-        <div class="text-center mt-4 login-footer">
-            <small>Mot de passe oublié ? <a href="/auth/forgot-password">Cliquer ici</a></small>
         </div>
     </div>
 </body>

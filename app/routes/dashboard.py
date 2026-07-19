@@ -9,11 +9,9 @@ from app.models.sale import Sale
 from app.models.sale_item import SaleItem
 from app.models.user import User
 from app.utils.dependencies import get_current_user
-from fastapi.templating import Jinja2Templates
+from app.utils.templating import templates
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
-
-templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/")

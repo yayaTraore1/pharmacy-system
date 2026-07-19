@@ -29,6 +29,80 @@
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
+/* ================= NAVIGATION PAR ONGLETS (module Ventes) ================= */
+.pharmacy-tabs {
+    border-bottom: none;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.pharmacy-tabs .nav-link {
+    border: none;
+    border-radius: 8px;
+    color: #4a5568;
+    font-weight: 500;
+    padding: 0.6rem 1.1rem;
+    transition: all 0.2s ease;
+}
+
+.pharmacy-tabs .nav-link:hover {
+    background: rgba(44, 122, 123, 0.08);
+    color: #2c7a7b;
+}
+
+.pharmacy-tabs .nav-link.active {
+    background: linear-gradient(90deg, #2c7a7b, #1f5556);
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(44, 122, 123, 0.25);
+}
+
+.page-title {
+    color: #2c7a7b;
+    font-weight: 700;
+    font-size: 1.7rem;
+    letter-spacing: -0.5px;
+    margin-bottom: 1.5rem;
+}
+
+.app-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.app-card .table {
+    margin-bottom: 0;
+}
+
+.app-card thead {
+    background: linear-gradient(90deg, #f8f9fa 0%, #f4f7fa 100%);
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.app-card thead th {
+    color: #2c7a7b;
+    font-weight: 600;
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    border-bottom: none;
+}
+
+.app-card tbody td {
+    padding: 0.9rem 1rem;
+    vertical-align: middle;
+}
+
+.app-card tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.app-card tbody tr:hover {
+    background-color: rgba(44, 122, 123, 0.04);
+}
+
 /* Make tables scrollable on smaller screens */
 @media (max-width: 991.98px) {
     .table {

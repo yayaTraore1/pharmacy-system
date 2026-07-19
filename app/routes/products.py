@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Form, Request, Query
 from fastapi.responses import RedirectResponse, FileResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.product import Product
@@ -9,10 +8,10 @@ from app.utils.dependencies import require_role, get_current_user
 from datetime import datetime
 from sqlalchemy import or_
 from app.utils.pdf_report import generate_products_pdf
+from app.utils.templating import templates
 
 
 router = APIRouter(prefix="/products", tags=["Products"])
-templates = Jinja2Templates(directory="templates")
 
 
 # =====================================================

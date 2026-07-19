@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException, Request, Depends
-from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from app.database import engine, Base
+from app.utils.templating import templates
 from app.models.product import Product
 from app.models.sale import Sale
 from app.models.supplier import Supplier
@@ -20,7 +20,6 @@ UPLOAD_DIR = "app/uploads/invoices"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Routers

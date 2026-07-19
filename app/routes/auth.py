@@ -9,17 +9,13 @@ from fastapi.responses import RedirectResponse
 from datetime import datetime, timedelta
 import secrets
 from app.utils.mailer import send_reset_password_email
+from app.utils.templating import templates
 
 
 # simple in‑memory rate limiter keyed by username+IP
 login_attempts: dict[str, list[datetime]] = {}
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
-
-from fastapi.templating import Jinja2Templates
-from fastapi import Request
-
-templates = Jinja2Templates(directory="templates")
 
 # @router.post("/signup")
 # def signup(

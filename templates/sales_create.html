@@ -5,49 +5,28 @@
 
 <div class="container-fluid">
 
-    <h3 class="mb-3">🧾 Nouvelle Vente</h3>
+    <h2 class="page-title"><i class="bi bi-cart-plus me-2"></i>Nouvelle Vente</h2>
 
-    <!-- NAVIGATION -->
-    <ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-            <a class="nav-link {% if request.url.path == '/sales' %}active{% endif %}"
-               href="/sales">📋 Liste</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if request.url.path == '/sales/create' %}active{% endif %}"
-               href="/sales/create">➕ Nouvelle Vente</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if request.url.path == '/sales/history' %}active{% endif %}"
-               href="/sales/history">📜 Historique</a>
-        </li>
-        
-        {% if user.role == "admin" %}
-        <li class="nav-item">
-            <a class="nav-link {% if request.url.path == '/sales/dashboard' %}active{% endif %}"
-               href="/sales/dashboard">📊 Statistiques</a>
-        </li>
-        {% endif %}
-    </ul>
+    {% include "_sales_nav.html" %}
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
+    <div class="card app-card">
+        <div class="card-body p-4">
 
             <form id="saleForm">
 
                 <div id="itemsContainer"></div>
 
-                <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-3 mb-3">
                     <button type="button"
                             class="btn btn-outline-primary"
                             onclick="addItem()">
-                        ➕ Ajouter Produit
+                        <i class="bi bi-plus-circle me-1"></i>Ajouter Produit
                     </button>
 
-                    <div class="bg-light p-3 rounded shadow-sm">
+                    <div class="p-3 rounded" style="background: rgba(44, 122, 123, 0.08);">
                         <h5 class="mb-0">
-                            💰 Total : 
-                            <span id="totalDisplay" class="text-success fw-bold">0</span> GNF
+                            <i class="bi bi-cash-coin me-1"></i>Total :
+                            <span id="totalDisplay" class="fw-bold" style="color: #2c7a7b;">0</span> GNF
                         </h5>
                     </div>
                 </div>
@@ -56,7 +35,7 @@
 
                 <div class="text-end">
                     <button type="submit" class="btn btn-success btn-lg">
-                        💾 Enregistrer Vente
+                        <i class="bi bi-save me-1"></i>Enregistrer Vente
                     </button>
                 </div>
 
@@ -78,20 +57,20 @@ function addItem() {
     const container = document.getElementById("itemsContainer");
 
     container.insertAdjacentHTML("beforeend", `
-        <div class="row mb-3 align-items-end item-row border rounded p-3 shadow-sm" id="row_${index}">
+        <div class="row mb-3 align-items-end item-row border rounded p-3" id="row_${index}" style="background: #fafcfc;">
 
             <div class="col-md-6">
                 <label class="form-label">Produit</label>
                 <select class="form-select product-select"
-                        name="product_${index}" 
-                        required 
+                        name="product_${index}"
+                        required
                         onchange="checkDuplicate(this); updateTotal();">
                     <option value="">----------- Choisir Produit ------------</option>
                     {% for product in products %}
                         <option value="{{ product.id }}"
                                 data-price="{{ product.sale_price }}"
                                 data-stock="{{ product.quantity }}">
-                            {{ product.name }} - {{ product.sale_price }} GNF - Stock({{ product.quantity }})
+                            {{ product.name }} — {{ product.sale_price|price }} GNF (Stock: {{ product.quantity }})
                         </option>
                     {% endfor %}
                 </select>
@@ -109,9 +88,9 @@ function addItem() {
 
             <div class="col-md-2">
                 <button type="button"
-                        class="btn btn-danger w-100"
+                        class="btn btn-outline-danger w-100"
                         onclick="removeItem(${index})">
-                    ❌ Supprimer
+                    <i class="bi bi-trash"></i>
                 </button>
             </div>
 

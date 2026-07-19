@@ -11,11 +11,10 @@ import os
 import shutil
 import uuid
 from fastapi import Request
-from fastapi.templating import Jinja2Templates
+from app.utils.templating import templates
 
 
 router = APIRouter(prefix="/suppliers", tags=["Suppliers"])
-templates = Jinja2Templates(directory="templates")
 
 # =========================
 # CREATE SUPPLIER (ADMIN)

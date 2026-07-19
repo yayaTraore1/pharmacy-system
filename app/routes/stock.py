@@ -8,12 +8,10 @@ from app.models.user import User
 from app.models.supplier import Supplier
 from app.utils.dependencies import get_current_user
 from app.utils.pdf_report import generate_ruptures_pdf, generate_expirations_pdf, generate_expired_soon_pdf
-from fastapi.templating import Jinja2Templates
+from app.utils.templating import templates
 from datetime import date,timedelta
 
 router = APIRouter(prefix="/stock", tags=["Stock"])
-
-templates = Jinja2Templates(directory="templates")
 
 
 # ===========================

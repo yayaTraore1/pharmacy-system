@@ -1,109 +1,196 @@
 {% extends "base.html" %}
+{% block title %}Mon Profil{% endblock %}
+
 {% block content %}
+
 <style>
-.page-header {
-    color: #2c7a7b;
-    font-weight: 700;
-    font-size: 1.8rem;
-    letter-spacing: -0.5px;
-}
+    .profile-avatar-wrap {
+        position: relative;
+        width: 88px;
+        margin: 0 auto 1rem;
+    }
 
-.profile-card {
-    border: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border-radius: 10px;
-    overflow: hidden;
-}
+    .profile-avatar {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2c7a7b 0%, #1f5556 100%);
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-.profile-header {
-    background: linear-gradient(90deg, #2c7a7b 0%, #38a3a5 100%);
-    color: white;
-    padding: 1rem 1.5rem;
-    font-weight: 600;
-}
+    .profile-avatar-img {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-.form-label {
-    font-weight: 600;
-    color: #444;
-}
+    .profile-avatar-edit {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 30px;
+        height: 30px;
+        background: #2c7a7b;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 2px solid white;
+        font-size: 0.85rem;
+        transition: background 0.2s ease;
+    }
 
-.form-control {
-    border-radius: 6px;
-    padding: 10px;
-}
+    .profile-avatar-edit:hover {
+        background: #1f5556;
+    }
 
-.form-control:focus {
-    border-color: #2c7a7b;
-    box-shadow: 0 0 0 0.2rem rgba(44,122,123,0.15);
-}
+    .profile-role-badge {
+        background: rgba(44, 122, 123, 0.12);
+        color: #2c7a7b;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
 
-.profile-info {
-    background: linear-gradient(90deg,#f8f9fa,#f4f7fa);
-    border-radius: 8px;
-    padding: 1rem;
-}
+    .profile-input-group .input-group-text {
+        background: #f4f7fa;
+        border-right: none;
+        color: #2c7a7b;
+    }
 
-.btn-save {
-    background: #2c7a7b;
-    color: white;
-    border: none;
-}
+    .profile-input-group .form-control {
+        border-left: none;
+    }
 
-.btn-save:hover {
-    background: #256b6c;
-}
-
-.error-card {
-    background: linear-gradient(90deg,#e74c3c,#c0392b);
-    color: white;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+    .profile-input-group .form-control:focus {
+        border-color: #2c7a7b;
+        box-shadow: 0 0 0 0.2rem rgba(44, 122, 123, 0.15);
+    }
 </style>
 
-<div class="container mt-5">
-    <div class="profile-card">
-        <div class="profile-header">
-            <h4><i class="bi bi-person-circle"></i> Mon Profil</h4>
-        </div>
-        <div class="card-body">
+<div class="container-fluid">
 
-            {% if error %}
-            <div class="error-card">{{ error }}</div>
-            {% endif %}
+    <h2 class="page-title"><i class="bi bi-person-circle me-2"></i>Mon Profil</h2>
 
-            {% if success %}
-            <div class="alert alert-success">{{ success }}</div>
-            {% endif %}
-
-            <form method="post" action="/users/profile/update">
-                <div class="mb-3">
-                    <label class="form-label">Nom d'utilisateur</label>
-                    <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
-                </div>
-                <div class="mb-3 profile-info">
-                    <label class="form-label">Rôle</label>
-                    <input type="text" class="form-control" value="{{ user.role }}" readonly>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Nouveau mot de passe</label>
-                    <input type="password" name="password" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Confirmer mot de passe</label>
-                    <input type="password" name="confirm_password" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-save">
-                    <i class="bi bi-save"></i> Sauvegarder
-                </button>
-            </form>
-        </div>
+    {% if error %}
+    <div class="alert alert-danger shadow-sm">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
     </div>
+    {% endif %}
+
+    {% if success %}
+    <div class="alert alert-success shadow-sm">
+        <i class="bi bi-check-circle me-2"></i>{{ success }}
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+
+        <!-- CARTE IDENTITÉ -->
+        <div class="col-lg-4">
+            <div class="card app-card text-center h-100">
+                <div class="card-body p-4">
+                    <div class="profile-avatar-wrap">
+                        {% if user.avatar %}
+                            <img src="/static/{{ user.avatar }}" class="profile-avatar-img" alt="Photo de profil">
+                        {% else %}
+                            <div class="profile-avatar">{{ user.username[0]|upper }}</div>
+                        {% endif %}
+
+                        <form method="post" action="/users/profile/photo" enctype="multipart/form-data" id="avatarForm">
+                            <label for="avatarInput" class="profile-avatar-edit" title="Changer la photo">
+                                <i class="bi bi-camera-fill"></i>
+                            </label>
+                            <input type="file" id="avatarInput" name="photo" accept="image/png,image/jpeg,image/webp" hidden
+                                   onchange="document.getElementById('avatarForm').submit()">
+                        </form>
+                    </div>
+                    <h5 class="fw-bold mb-1">{{ user.username }}</h5>
+                    <p class="text-muted small mb-3">{{ user.email }}</p>
+                    <span class="profile-role-badge">
+                        <i class="bi bi-shield-check me-1"></i>{{ user.role|capitalize }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARTE MODIFICATION -->
+        <div class="col-lg-8">
+            <div class="card app-card h-100">
+                <div class="card-header bg-white" style="border-left: 4px solid #2c7a7b;">
+                    <span class="fw-semibold" style="color: #2c7a7b;">
+                        <i class="bi bi-pencil-square me-2"></i>Modifier mes informations
+                    </span>
+                </div>
+                <div class="card-body p-4">
+
+                    <form method="post" action="/users/profile/update">
+
+                        <div class="mb-3">
+                            <label class="form-label">Nom d'utilisateur</label>
+                            <div class="input-group profile-input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Email</label>
+                            <div class="input-group profile-input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <p class="text-muted small mb-3">
+                            <i class="bi bi-info-circle me-1"></i>Laissez les champs ci-dessous vides pour conserver votre mot de passe actuel.
+                        </p>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nouveau mot de passe</label>
+                                <div class="input-group profile-input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Confirmer mot de passe</label>
+                                <div class="input-group profile-input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input type="password" name="confirm_password" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn" style="background: #2c7a7b; color: white;">
+                                <i class="bi bi-save me-1"></i>Sauvegarder
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+
 {% endblock %}

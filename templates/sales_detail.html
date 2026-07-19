@@ -1,65 +1,106 @@
 {% extends "base.html" %}
-{% block title %}📄Détail Vente{% endblock %}
+{% block title %}Détail Vente{% endblock %}
 
-{% block content %}  
+{% block content %}
 
-<h3>Détail Vente #{{ sale.id }}</h3>
-<button onclick="window.location.href='/sales'" class="btn btn-secondary">
-    ← Retour
-</button>
+<div class="container-fluid">
 
-<p><strong>Date:</strong> {{ sale.created_at }}</p>
-<p><strong>Total:</strong> {{ sale.total_amount }} GNF</p>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <h2 class="page-title mb-0"><i class="bi bi-receipt me-2"></i>Détail Vente #{{ sale.id }}</h2>
+        <a href="/sales" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Retour
+        </a>
+    </div>
 
-{% if sale.is_cancelled %}
-    <span class="badge bg-danger">Vente Annulée</span>
-{% endif %}
+    <div class="card app-card mb-4">
+        <div class="card-body d-flex flex-wrap gap-4 align-items-center">
 
-<hr>
+            <div>
+                <div class="text-uppercase small text-muted fw-semibold mb-1" style="letter-spacing: 1px; font-size: 0.72rem;">Date</div>
+                <div class="fw-semibold">{{ sale.created_at.strftime("%d/%m/%Y %H:%M") }}</div>
+            </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Produit</th>
-            <th>Quantité</th>
-            <th>Prix Unitaire</th>
-            <th>Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in sale.items %}
-        <tr>
-            <td>{{ item.product.name }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.unit_price }}</td>
-            <td>{{ item.total_price }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+            <div>
+                <div class="text-uppercase small text-muted fw-semibold mb-1" style="letter-spacing: 1px; font-size: 0.72rem;">Montant Total</div>
+                <div class="fw-bold fs-4" style="color: #2c7a7b;">{{ sale.total_amount|price }} <small class="fs-6 text-muted">GNF</small></div>
+            </div>
 
-{% if not sale.is_cancelled and user.role == "admin" %}
-<form method="post" action="/sales/{{ sale.id }}/cancel"
-  onsubmit="return confirm('Confirmer l\'annulation de cette vente ?')">
-    <button class="btn btn-danger">
-        Annuler Vente
-    </button>
-</form>
-{% endif %}
+            <div>
+                <div class="text-uppercase small text-muted fw-semibold mb-1" style="letter-spacing: 1px; font-size: 0.72rem;">Statut</div>
+                {% if sale.is_cancelled %}
+                    <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Vente Annulée</span>
+                {% else %}
+                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Active</span>
+                {% endif %}
+            </div>
 
-{% if not sale.is_cancelled %}
-<a href="/sales/{{ sale.id }}/invoice" class="btn btn-dark mt-2">
-    Télécharger Facture
-</a>
-{% endif %}
+        </div>
+    </div>
 
-{% if sale.is_cancelled and user.role == "admin" %}
-<form method="post" action="/sales/{{ sale.id }}/restaure"
-  onsubmit="return confirm('Confirmer la restauration de cette vente ?')">
-    <button class="btn btn-danger">
-        Restaurer Vente
-    </button>
-</form>
-{% endif %}
+    <div class="card app-card mb-4">
+        <div class="card-header bg-white" style="border-left: 4px solid #2c7a7b;">
+            <span class="fw-semibold" style="color: #2c7a7b;">
+                <i class="bi bi-capsule me-2"></i>Produits Vendus
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th class="text-center">Quantité</th>
+                        <th class="text-end">Prix Unitaire</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in sale.items %}
+                    <tr>
+                        <td class="fw-semibold">{{ item.product.name }}</td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-end">{{ item.unit_price|price }} <small class="text-muted">GNF</small></td>
+                        <td class="text-end fw-bold">{{ item.total_price|price }} <small class="text-muted">GNF</small></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end fw-semibold">Total</td>
+                        <td class="text-end fw-bold" style="color: #2c7a7b;">{{ sale.total_amount|price }} <small class="text-muted">GNF</small></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+
+        {% if not sale.is_cancelled %}
+        <a href="/sales/{{ sale.id }}/invoice" class="btn" style="background: #2c7a7b; color: white;">
+            <i class="bi bi-file-earmark-pdf me-1"></i>Télécharger Facture
+        </a>
+        {% endif %}
+
+        {% if not sale.is_cancelled and user.role == "admin" %}
+        <form method="post" action="/sales/{{ sale.id }}/cancel"
+              onsubmit="return confirm('Confirmer l\'annulation de cette vente ?')">
+            <button class="btn btn-danger">
+                <i class="bi bi-x-circle me-1"></i>Annuler Vente
+            </button>
+        </form>
+        {% endif %}
+
+        {% if sale.is_cancelled and user.role == "admin" %}
+        <form method="post" action="/sales/{{ sale.id }}/restaure"
+              onsubmit="return confirm('Confirmer la restauration de cette vente ?')">
+            <button class="btn btn-success">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>Restaurer Vente
+            </button>
+        </form>
+        {% endif %}
+
+    </div>
+
+</div>
 
 {% endblock %}

@@ -1,19 +1,26 @@
-from fastapi import APIRouter, Depends, Request, Form, HTTPException
+from fastapi import APIRouter, Depends, Request, Form, HTTPException, UploadFile, File
 from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.user import User
 from app.utils.security import hash_password
 from app.utils.dependencies import require_role, get_current_user
+from app.utils.templating import templates
 
+import os
+import shutil
+import uuid
 import secrets
+from urllib.parse import quote
 from datetime import datetime, timedelta
 from app.utils.mailer import send_create_account_email
 
 router = APIRouter(prefix="/users", tags=["Users"])
-templates = Jinja2Templates(directory="templates")
+
+AVATAR_DIR = "static/uploads/avatars"
+ALLOWED_AVATAR_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
+MAX_AVATAR_SIZE = 3 * 1024 * 1024  # 3 Mo
 
 # admin-only checks use require_role decorator
 
@@ -245,6 +252,49 @@ def update_profile(
         "user": current_user,
         "success": "Profil mis à jour, reconnectez-vous svp."}
     )
+
+# ---------------------------
+# 🖼️ Photo de profil
+# ---------------------------
+@router.post("/profile/photo")
+def update_profile_photo(
+    photo: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    ext = os.path.splitext(photo.filename or "")[1].lower()
+
+    if ext not in ALLOWED_AVATAR_EXTENSIONS:
+        error = quote("Format d'image non supporté (jpg, png ou webp uniquement)")
+        return RedirectResponse(f"/users/profile?error={error}", status_code=303)
+
+    contents = photo.file.read()
+
+    if len(contents) > MAX_AVATAR_SIZE:
+        error = quote("Image trop volumineuse (3 Mo maximum)")
+        return RedirectResponse(f"/users/profile?error={error}", status_code=303)
+
+    user = db.query(User).filter(User.id == current_user.id).first()
+
+    os.makedirs(AVATAR_DIR, exist_ok=True)
+
+    # supprimer l'ancienne photo si elle existe
+    if user.avatar:
+        old_path = os.path.join("static", user.avatar)
+        if os.path.isfile(old_path):
+            os.remove(old_path)
+
+    unique_name = f"{uuid.uuid4()}{ext}"
+    file_location = os.path.join(AVATAR_DIR, unique_name)
+
+    with open(file_location, "wb") as buffer:
+        buffer.write(contents)
+
+    user.avatar = f"uploads/avatars/{unique_name}"
+    db.commit()
+
+    success = quote("Photo de profil mise à jour")
+    return RedirectResponse(f"/users/profile?success={success}", status_code=303)
 
 # ---------------------------
 # ➕ Ajouter utilisateur (Admin)

@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.responses import FileResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy import func,extract
 from datetime import date, datetime, timedelta, timezone
@@ -14,9 +13,9 @@ from app.schemas import user
 from app.schemas.sale import SaleCreate
 from app.utils.dependencies import get_current_user
 from app.utils.invoice import generate_invoice
+from app.utils.templating import templates
 
 router = APIRouter(prefix="/sales", tags=["Sales"])
-templates = Jinja2Templates(directory="templates")
 
 # =========================================================
 # ======================== API =============================
